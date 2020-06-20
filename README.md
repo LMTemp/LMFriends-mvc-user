@@ -18,16 +18,6 @@ simple and easy to extend.
 
 More information and examples are available on the [ZfcUser Wiki](https://github.com/ZF-Commons/ZfcUser/wiki)
 
-Versions
---------
-Please use below table to figure out what version of ZfcUser you should use.
-
-| ZfcUser version | Supported Zend Framework version | Status                                      |
-|-----------------|----------------------------------|---------------------------------------------|
-| 1.x             | <= 2.5                           | Security-fixes only                         |
-| 2.x             | >= 2.6 < 3                       | bug-fixes, security-fixes                   |
-| 3.x             | >= 3                             | New features, bug-fixes, security-fixes     |
-
 Storage Adapter Modules
 -----------------------
 
@@ -88,13 +78,13 @@ Installation
 
     ```php
     <?php
-    return array(
-        'modules' => array(
+    return [
+        'modules' => [
             // ...
             'ZfcUser',
-        ),
+        ],
         // ...
-    );
+    ];
     ```
 
 2. Then Import the SQL schema located in `./vendor/zf-commons/zfc-user/data/schema.sql` (if you installed using the Composer) or in `./vendor/ZfcUser/data/schema.sql`.
@@ -114,20 +104,20 @@ Coming soon...
 
 ```php
 <?php
-return array(
-    'db' => array(
+return [
+    'db' => [
         'driver'    => 'PdoMysql',
         'hostname'  => 'changeme',
         'database'  => 'changeme',
         'username'  => 'changeme',
         'password'  => 'changeme',
-    ),
-    'service_manager' => array(
-        'factories' => array(
+    ],
+    'service_manager' => [
+        'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-        ),
-    ),
-);
+        ],
+    ],
+];
 
 ```
 

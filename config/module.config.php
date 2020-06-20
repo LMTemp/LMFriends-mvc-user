@@ -1,88 +1,89 @@
 <?php
 
-return array(
-    'view_manager' => array(
-        'template_path_stack' => array(
-            'zfcuser' => __DIR__ . '/../view',
-        ),
-    ),
+declare(strict_types=1);
 
-    'router' => array(
-        'routes' => array(
-            'zfcuser' => array(
+return [
+    'view_manager' => [
+        'template_path_stack' => [
+            'zfcuser' => __DIR__ . '/../view',
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'zfcuser' => [
                 'type' => 'Literal',
                 'priority' => 1000,
-                'options' => array(
+                'options' => [
                     'route' => '/user',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'zfcuser',
                         'action'     => 'index',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'login' => array(
+                'child_routes' => [
+                    'login' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/login',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfcuser',
                                 'action'     => 'login',
-                            ),
-                        ),
-                    ),
-                    'authenticate' => array(
+                            ],
+                        ],
+                    ],
+                    'authenticate' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/authenticate',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfcuser',
                                 'action'     => 'authenticate',
-                            ),
-                        ),
-                    ),
-                    'logout' => array(
+                            ],
+                        ],
+                    ],
+                    'logout' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/logout',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfcuser',
                                 'action'     => 'logout',
-                            ),
-                        ),
-                    ),
-                    'register' => array(
+                            ],
+                        ],
+                    ],
+                    'register' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/register',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfcuser',
                                 'action'     => 'register',
-                            ),
-                        ),
-                    ),
-                    'changepassword' => array(
+                            ],
+                        ],
+                    ],
+                    'changepassword' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/change-password',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfcuser',
                                 'action'     => 'changepassword',
-                            ),
-                        ),
-                    ),
-                    'changeemail' => array(
+                            ],
+                        ],
+                    ],
+                    'changeemail' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/change-email',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfcuser',
                                 'action' => 'changeemail',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-);
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+];

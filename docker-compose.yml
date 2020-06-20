@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  php-fpm:
+    image: alexz707/intdev:php-fpm_7.4
+    container_name: php-fpm
+    ports:
+      - 9000:9000
+    volumes:
+      - .:/var/www
+
+  mailhog:
+    image: alexz707/intdev:mailhog_latest
+    container_name: mailhog_latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"

@@ -1,11 +1,17 @@
 <?php
+
+declare(strict_types=1);
+
+use Laminas\Db\Adapter\Adapter;
+use LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter;
+
 /**
  * ZfcUser Configuration
  *
  * If you have a ./config/autoload/ directory set up for your project, you can
  * drop this config file in it and change the values as you wish.
  */
-$settings = array(
+$settings = [
     /**
      * Zend\Db\Adapter\Adapter DI Alias
      *
@@ -15,13 +21,13 @@ $settings = array(
     //'zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
 
     /**
-     * User Model Entity Class
+     * UserService Model Entity Class
      *
      * Name of Entity class to use. Useful for using your own entity class
-     * instead of the default one provided. Default is ZfcUser\Entity\User.
-     * The entity class should implement ZfcUser\Entity\UserInterface
+     * instead of the default one provided. Default is ZfcUser\Entity\UserService.
+     * The entity class should implement ZfcUser\Entity\UserEntityInterface
      */
-    //'user_entity_class' => 'ZfcUser\Entity\User',
+    //'user_entity_class' => 'ZfcUser\Entity\UserService',
 
     /**
      * Enable registration
@@ -42,7 +48,7 @@ $settings = array(
      */
     //'enable_username' => false,
 
-    /**     
+    /**
      * Authentication Adapters
      *
      * Specify the adapters that will be used to try and authenticate the user
@@ -50,7 +56,7 @@ $settings = array(
      * Default value: array containing 'ZfcUser\Authentication\Adapter\Db' with priority 100
      * Accepted values: array containing services that implement 'ZfcUser\Authentication\Adapter\ChainableAdapter'
      */
-    'auth_adapters' => array( 100 => 'ZfcUser\Authentication\Adapter\Db' ),
+    'auth_adapters' => [100 => DbAdapter::class],
 
     /**
      * Enable Display Name
@@ -74,7 +80,7 @@ $settings = array(
     //'auth_identity_fields' => array( 'email' ),
 
     /**
-     * Login form timeout
+     * LoginForm form timeout
      *
      * Specify the timeout for the CSRF security field of the login form
      * in seconds. Default value is 300 seconds.
@@ -94,7 +100,7 @@ $settings = array(
     //'user_form_timeout' => 300,
 
     /**
-     * Login After Registration
+     * LoginForm After Registration
      *
      * Automatically logs the user in after they successfully register. Default
      * value is false.
@@ -137,15 +143,15 @@ $settings = array(
     //'use_redirect_parameter_if_present' => true,
 
     /**
-	 * Sets the view template for the user login widget
-	 *
-	 * Default value: 'zfc-user/user/login.phtml'
+     * Sets the view template for the user login widget
+     *
+     * Default value: 'zfc-user/user/login.phtml'
      * Accepted values: string path to a view script
-	 */
+     */
     //'user_login_widget_view_template' => 'zfc-user/user/login.phtml',
 
     /**
-     * Login Redirect Route
+     * LoginForm Redirect Route
      *
      * Upon successful login the user will be redirected to the entered route
      *
@@ -190,46 +196,46 @@ $settings = array(
 
     /**
      * Enable user state usage
-     * 
+     *
      * Should user's state be used in the registration/login process?
      */
     //'enable_user_state' => true,
-    
+
     /**
      * Default user state upon registration
-     * 
+     *
      * What state user should have upon registration?
      * Allowed value type: integer
      */
     //'default_user_state' => 1,
-    
+
     /**
      * States which are allowing user to login
-     * 
+     *
      * When user tries to login, is his/her state one of the following?
      * Include null if you want user's with no state to login as well.
      * Allowed value types: null and integer
      */
     //'allowed_login_states' => array( null, 1 ),
-    
+
     /**
-     * User table name
+     * UserService table name
      */
     //'table_name' => 'user',
-    
+
     /**
      * End of ZfcUser configuration
      */
-);
+];
 
 /**
  * You do not need to edit below this line
  */
-return array(
-    'zfcuser' => $settings,
-    'service_manager' => array(
-        'aliases' => array(
-            'zfcuser_zend_db_adapter' => (isset($settings['zend_db_adapter'])) ? $settings['zend_db_adapter']: 'Zend\Db\Adapter\Adapter',
-        ),
-    ),
-);
+return [
+    'zfcuser'         => $settings,
+    'service_manager' => [
+        'aliases' => [
+            'zfcuser_zend_db_adapter' => $settings['zend_db_adapter'] ?? Adapter::class,
+        ],
+    ],
+];
