@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace LaminasFriends\Mvc\User\Authentication\Adapter;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Authentication\Result as AuthenticationResult;
-use Laminas\EventManager\EventInterface;
-use Laminas\ServiceManager\ServiceManager;
 use Laminas\Crypt\Password\Bcrypt;
+use Laminas\Crypt\Password\Exception\RuntimeException;
 use Laminas\Session\Container as SessionContainer;
 use LaminasFriends\Mvc\User\Entity\UserEntityInterface;
-use LaminasFriends\Mvc\User\Mapper\UserMapperInterface as UserMapperInterface;
-use LaminasFriends\Mvc\User\Options\ModuleOptions;
+use LaminasFriends\Mvc\User\Mapper\UserMapperInterface;
+use LaminasFriends\Mvc\User\Options\UserServiceOptionsInterface;
 
+/**
+ * Class DbAdapter
+ */
 class DbAdapter extends AbstractAdapter
 {
-    /**
-     * @var UserMapperInterface
-     */
-    protected $mapper;
+    protected UserMapperInterface $mapper;
+    protected UserServiceOptionsInterface $options;
 
     /**
      * @var callable
@@ -27,20 +26,23 @@ class DbAdapter extends AbstractAdapter
     protected $credentialPreprocessor;
 
     /**
-     * @var ServiceManager
+     * DbAdapter constructor.
+     *
+     * @param UserMapperInterface         $userMapper
+     * @param UserServiceOptionsInterface $options
      */
-    protected $serviceManager;
-
-    /**
-     * @var ModuleOptions
-     */
-    protected $options;
+    public function __construct(UserMapperInterface $userMapper, UserServiceOptionsInterface $options)
+    {
+        $this->mapper = $userMapper;
+        $this->options = $options;
+    }
 
     /**
      * Called when user id logged out
      * @param AdapterChainEvent $e
+     * @return void
      */
-    public function logout(AdapterChainEvent $e)
+    public function logout(AdapterChainEvent $e): void
     {
         $this->getStorage()->clear();
     }
@@ -66,15 +68,15 @@ class DbAdapter extends AbstractAdapter
         $userObject = null;
 
         // Cycle through the configured identity sources and test each
-        $fields = $this->getOptions()->getAuthIdentityFields();
+        $fields = $this->options->getAuthIdentityFields();
         while (!is_object($userObject) && count($fields) > 0) {
             $mode = array_shift($fields);
             switch ($mode) {
                 case 'username':
-                    $userObject = $this->getMapper()->findByUsername($identity);
+                    $userObject = $this->mapper->findByUsername($identity);
                     break;
                 case 'email':
-                    $userObject = $this->getMapper()->findByEmail($identity);
+                    $userObject = $this->mapper->findByEmail($identity);
                     break;
             }
         }
@@ -86,9 +88,9 @@ class DbAdapter extends AbstractAdapter
             return false;
         }
 
-        if ($this->getOptions()->getEnableUserState()) {
+        if ($this->options->getEnableUserState()) {
             // Don't allow user to login if state is not in allowed list
-            if (!in_array($userObject->getState(), $this->getOptions()->getAllowedLoginStates())) {
+            if (!in_array($userObject->getState(), $this->options->getAllowedLoginStates())) {
                 $e->setCode(AuthenticationResult::FAILURE_UNCATEGORIZED)
                   ->setMessages(['A record with the supplied identity is not active.']);
                 $this->setSatisfied(false);
@@ -97,7 +99,7 @@ class DbAdapter extends AbstractAdapter
         }
 
         $bcrypt = new Bcrypt();
-        $bcrypt->setCost($this->getOptions()->getPasswordCost());
+        $bcrypt->setCost($this->options->getPasswordCost());
         if (!$bcrypt->verify($credential, $userObject->getPassword())) {
             // Password does not match
             $e->setCode(AuthenticationResult::FAILURE_CREDENTIAL_INVALID)
@@ -122,15 +124,21 @@ class DbAdapter extends AbstractAdapter
           ->setMessages(['Authentication successful.']);
     }
 
-    protected function updateUserPasswordHash(UserEntityInterface $userObject, $password, Bcrypt $bcrypt)
+    /**
+     * @param UserEntityInterface $userObject
+     * @param                     $password
+     * @param Bcrypt              $bcrypt
+     *
+     * @throws RuntimeException
+     */
+    protected function updateUserPasswordHash(UserEntityInterface $userObject, $password, Bcrypt $bcrypt): void
     {
         $hash = explode('$', $userObject->getPassword());
         if ($hash[2] === $bcrypt->getCost()) {
             return;
         }
         $userObject->setPassword($bcrypt->create($password));
-        $this->getMapper()->update($userObject);
-        return $this;
+        $this->mapper->update($userObject);
     }
 
     public function preProcessCredential($credential)
@@ -141,33 +149,6 @@ class DbAdapter extends AbstractAdapter
         }
 
         return $credential;
-    }
-
-    /**
-     * getMapper
-     *
-     * @return UserMapperInterface
-     */
-    public function getMapper()
-    {
-        if (null === $this->mapper) {
-            $this->mapper = $this->getServiceManager()->get('zfcuser_user_mapper');
-        }
-
-        return $this->mapper;
-    }
-
-    /**
-     * setMapper
-     *
-     * @param UserMapperInterface $mapper
-     * @return Db
-     */
-    public function setMapper(UserMapperInterface $mapper)
-    {
-        $this->mapper = $mapper;
-
-        return $this;
     }
 
     /**
@@ -190,45 +171,5 @@ class DbAdapter extends AbstractAdapter
     {
         $this->credentialPreprocessor = $credentialPreprocessor;
         return $this;
-    }
-
-    /**
-     * Retrieve service manager instance
-     *
-     * @return ServiceManager
-     */
-    public function getServiceManager()
-    {
-        return $this->serviceManager;
-    }
-
-    /**
-     * Set service manager instance
-     *
-     * @param ContainerInterface $serviceManager
-     */
-    public function setServiceManager(ContainerInterface $serviceManager)
-    {
-        $this->serviceManager = $serviceManager;
-    }
-
-    /**
-     * @param ModuleOptions $options
-     */
-    public function setOptions(ModuleOptions $options)
-    {
-        $this->options = $options;
-    }
-
-    /**
-     * @return ModuleOptions
-     */
-    public function getOptions()
-    {
-        if ($this->options === null) {
-            $this->setOptions($this->getServiceManager()->get('zfcuser_module_options'));
-        }
-
-        return $this->options;
     }
 }

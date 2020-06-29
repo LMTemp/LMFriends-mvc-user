@@ -11,6 +11,13 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
 {
     protected $tableName  = 'user';
 
+
+    public function __construct()
+    {
+
+    }
+
+
     public function findByEmail($email)
     {
         $select = $this->getSelect()
@@ -36,7 +43,7 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
     public function findById($id)
     {
         $select = $this->getSelect()
-                       ->where(['user_id' => $id]);
+                       ->where(['id' => $id]);
         $entity = $this->select($select)->current();
 
         $this->getEventManager()->trigger('find', $this, ['entity' => $entity]);
@@ -66,7 +73,7 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
     public function update(UserEntityInterface $entity, $where = null, $tableName = null, HydratorInterface $hydrator = null)
     {
         if (!$where) {
-            $where = ['user_id' => $entity->getId()];
+            $where = ['id' => $entity->getId()];
         }
 
         return parent::update($entity, $where, $tableName, $hydrator);

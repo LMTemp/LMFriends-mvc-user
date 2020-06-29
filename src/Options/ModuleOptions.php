@@ -7,8 +7,14 @@ namespace LaminasFriends\Mvc\User\Options;
 use Laminas\Stdlib\AbstractOptions;
 use LaminasFriends\Mvc\User\Entity\UserEntity;
 use LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter;
+use LaminasFriends\Mvc\User\Module;
 
+/**
+ * Class ModuleOptions
+ */
 class ModuleOptions extends AbstractOptions implements
+    AuthenticationOptionsInterface,
+    RegistrationOptionsInterface,
     UserControllerOptionsInterface,
     UserServiceOptionsInterface
 {
@@ -25,12 +31,12 @@ class ModuleOptions extends AbstractOptions implements
     /**
      * @var string
      */
-    protected $loginRedirectRoute = 'zfcuser';
+    protected $loginRedirectRoute = Module::ROUTE_BASE;
 
     /**
      * @var string
      */
-    protected $logoutRedirectRoute = 'zfcuser/login';
+    protected $logoutRedirectRoute = Module::ROUTE_LOGIN;
 
     /**
      * @var int
@@ -80,7 +86,7 @@ class ModuleOptions extends AbstractOptions implements
     /**
      * @var string
      */
-    protected $userLoginWidgetViewTemplate = 'zfc-user/user/login.phtml';
+    protected $userLoginWidgetViewTemplate = 'mvc-user/user/login.phtml';
 
     /**
      * @var bool
@@ -116,26 +122,15 @@ class ModuleOptions extends AbstractOptions implements
     /**
      * @var array
      */
-    protected $formCaptchaOptions = [
-        'class'   => 'figlet',
-        'options' => [
-            'wordLen'    => 5,
-            'expiration' => 300,
-            'timeout'    => 300,
-        ],
-    ];
-
-    /**
-     * set login redirect route
-     *
-     * @param string $loginRedirectRoute
-     * @return ModuleOptions
-     */
-    public function setLoginRedirectRoute($loginRedirectRoute)
-    {
-        $this->loginRedirectRoute = $loginRedirectRoute;
-        return $this;
-    }
+    protected $formCaptchaOptions
+        = [
+            'class'   => 'figlet',
+            'options' => [
+                'wordLen'    => 5,
+                'expiration' => 300,
+                'timeout'    => 300,
+            ],
+        ];
 
     /**
      * get login redirect route
@@ -148,14 +143,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set logout redirect route
+     * set login redirect route
      *
-     * @param string $logoutRedirectRoute
+     * @param string $loginRedirectRoute
+     *
      * @return ModuleOptions
      */
-    public function setLogoutRedirectRoute($logoutRedirectRoute)
+    public function setLoginRedirectRoute($loginRedirectRoute)
     {
-        $this->logoutRedirectRoute = $logoutRedirectRoute;
+        $this->loginRedirectRoute = $loginRedirectRoute;
         return $this;
     }
 
@@ -170,14 +166,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set use redirect param if present
+     * set logout redirect route
      *
-     * @param bool $useRedirectParameterIfPresent
+     * @param string $logoutRedirectRoute
+     *
      * @return ModuleOptions
      */
-    public function setUseRedirectParameterIfPresent($useRedirectParameterIfPresent)
+    public function setLogoutRedirectRoute($logoutRedirectRoute)
     {
-        $this->useRedirectParameterIfPresent = $useRedirectParameterIfPresent;
+        $this->logoutRedirectRoute = $logoutRedirectRoute;
         return $this;
     }
 
@@ -192,14 +189,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set the view template for the user login widget
+     * set use redirect param if present
      *
-     * @param string $userLoginWidgetViewTemplate
+     * @param bool $useRedirectParameterIfPresent
+     *
      * @return ModuleOptions
      */
-    public function setUserLoginWidgetViewTemplate($userLoginWidgetViewTemplate)
+    public function setUseRedirectParameterIfPresent($useRedirectParameterIfPresent)
     {
-        $this->userLoginWidgetViewTemplate = $userLoginWidgetViewTemplate;
+        $this->useRedirectParameterIfPresent = $useRedirectParameterIfPresent;
         return $this;
     }
 
@@ -214,14 +212,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set enable user registration
+     * set the view template for the user login widget
      *
-     * @param bool $enableRegistration
+     * @param string $userLoginWidgetViewTemplate
+     *
      * @return ModuleOptions
      */
-    public function setEnableRegistration($enableRegistration)
+    public function setUserLoginWidgetViewTemplate($userLoginWidgetViewTemplate)
     {
-        $this->enableRegistration = $enableRegistration;
+        $this->userLoginWidgetViewTemplate = $userLoginWidgetViewTemplate;
         return $this;
     }
 
@@ -236,14 +235,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set login form timeout
+     * set enable user registration
      *
-     * @param int $loginFormTimeout
+     * @param bool $enableRegistration
+     *
      * @return ModuleOptions
      */
-    public function setLoginFormTimeout($loginFormTimeout)
+    public function setEnableRegistration($enableRegistration)
     {
-        $this->loginFormTimeout = $loginFormTimeout;
+        $this->enableRegistration = $enableRegistration;
         return $this;
     }
 
@@ -258,14 +258,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set user form timeout in seconds
+     * set login form timeout
      *
-     * @param int $userFormTimeout
+     * @param int $loginFormTimeout
+     *
      * @return ModuleOptions
      */
-    public function setUserFormTimeout($userFormTimeout)
+    public function setLoginFormTimeout($loginFormTimeout)
     {
-        $this->userFormTimeout = $userFormTimeout;
+        $this->loginFormTimeout = $loginFormTimeout;
         return $this;
     }
 
@@ -280,14 +281,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set login after registration
+     * set user form timeout in seconds
      *
-     * @param bool $loginAfterRegistration
+     * @param int $userFormTimeout
+     *
      * @return ModuleOptions
      */
-    public function setLoginAfterRegistration($loginAfterRegistration)
+    public function setUserFormTimeout($userFormTimeout)
     {
-        $this->loginAfterRegistration = $loginAfterRegistration;
+        $this->userFormTimeout = $userFormTimeout;
         return $this;
     }
 
@@ -302,11 +304,24 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
+     * set login after registration
+     *
+     * @param bool $loginAfterRegistration
+     *
+     * @return ModuleOptions
+     */
+    public function setLoginAfterRegistration($loginAfterRegistration)
+    {
+        $this->loginAfterRegistration = $loginAfterRegistration;
+        return $this;
+    }
+
+    /**
      * get user state usage for registration/login process
      *
-     * @return int
+     * @return bool
      */
-    public function getEnableUserState()
+    public function getEnableUserState(): bool
     {
         return $this->enableUserState;
     }
@@ -315,12 +330,12 @@ class ModuleOptions extends AbstractOptions implements
      * set user state usage for registration/login process
      *
      * @param bool $flag
-     * @return ModuleOptions
+     *
+     * @return void
      */
-    public function setEnableUserState($flag)
+    public function setEnableUserState(bool $flag): void
     {
         $this->enableUserState = $flag;
-        return $this;
     }
 
     /**
@@ -328,7 +343,7 @@ class ModuleOptions extends AbstractOptions implements
      *
      * @return int
      */
-    public function getDefaultUserState()
+    public function getDefaultUserState(): int
     {
         return $this->defaultUserState;
     }
@@ -337,6 +352,7 @@ class ModuleOptions extends AbstractOptions implements
      * set default user state on registration
      *
      * @param int $state
+     *
      * @return ModuleOptions
      */
     public function setDefaultUserState($state)
@@ -359,23 +375,12 @@ class ModuleOptions extends AbstractOptions implements
      * set list of states to allow user login
      *
      * @param array $states
+     *
      * @return ModuleOptions
      */
     public function setAllowedLoginStates(array $states)
     {
         $this->allowedLoginStates = $states;
-        return $this;
-    }
-
-    /**
-     * set auth adapters
-     *
-     * @param array $authAdapterss
-     * @return ModuleOptions
-     */
-    public function setAuthAdapters($authAdapters)
-    {
-        $this->authAdapters = $authAdapters;
         return $this;
     }
 
@@ -390,14 +395,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set auth identity fields
+     * set auth adapters
      *
-     * @param array $authIdentityFields
+     * @param array $authAdapterss
+     *
      * @return ModuleOptions
      */
-    public function setAuthIdentityFields($authIdentityFields)
+    public function setAuthAdapters($authAdapters)
     {
-        $this->authIdentityFields = $authIdentityFields;
+        $this->authAdapters = $authAdapters;
         return $this;
     }
 
@@ -412,14 +418,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set enable username
+     * set auth identity fields
      *
-     * @param bool $flag
+     * @param array $authIdentityFields
+     *
      * @return ModuleOptions
      */
-    public function setEnableUsername($flag)
+    public function setAuthIdentityFields($authIdentityFields)
     {
-        $this->enableUsername = (bool) $flag;
+        $this->authIdentityFields = $authIdentityFields;
         return $this;
     }
 
@@ -434,14 +441,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set enable display name
+     * set enable username
      *
      * @param bool $flag
+     *
      * @return ModuleOptions
      */
-    public function setEnableDisplayName($flag)
+    public function setEnableUsername($flag)
     {
-        $this->enableDisplayName = (bool) $flag;
+        $this->enableUsername = (bool)$flag;
         return $this;
     }
 
@@ -456,14 +464,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set use a captcha in registration form
+     * set enable display name
      *
-     * @param bool $useRegistrationFormCaptcha
+     * @param bool $flag
+     *
      * @return ModuleOptions
      */
-    public function setUseRegistrationFormCaptcha($useRegistrationFormCaptcha)
+    public function setEnableDisplayName($flag)
     {
-        $this->useRegistrationFormCaptcha = $useRegistrationFormCaptcha;
+        $this->enableDisplayName = (bool)$flag;
         return $this;
     }
 
@@ -478,14 +487,15 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set user entity class name
+     * set use a captcha in registration form
      *
-     * @param string $userEntityClass
+     * @param bool $useRegistrationFormCaptcha
+     *
      * @return ModuleOptions
      */
-    public function setUserEntityClass($userEntityClass)
+    public function setUseRegistrationFormCaptcha($useRegistrationFormCaptcha)
     {
-        $this->userEntityClass = $userEntityClass;
+        $this->useRegistrationFormCaptcha = $useRegistrationFormCaptcha;
         return $this;
     }
 
@@ -494,21 +504,21 @@ class ModuleOptions extends AbstractOptions implements
      *
      * @return string
      */
-    public function getUserEntityClass()
+    public function getUserEntityClass(): string
     {
         return $this->userEntityClass;
     }
 
     /**
-     * set password cost
+     * set user entity class name
      *
-     * @param int $passwordCost
-     * @return ModuleOptions
+     * @param string $userEntityClass
+     *
+     * @return void
      */
-    public function setPasswordCost($passwordCost)
+    public function setUserEntityClass(string $userEntityClass): void
     {
-        $this->passwordCost = $passwordCost;
-        return $this;
+        $this->userEntityClass = $userEntityClass;
     }
 
     /**
@@ -522,13 +532,16 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set user table name
+     * set password cost
      *
-     * @param string $tableName
+     * @param int $passwordCost
+     *
+     * @return ModuleOptions
      */
-    public function setTableName($tableName)
+    public function setPasswordCost($passwordCost)
     {
-        $this->tableName=$tableName;
+        $this->passwordCost = $passwordCost;
+        return $this;
     }
 
     /**
@@ -542,15 +555,13 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * set form CAPTCHA options
+     * set user table name
      *
-     * @param array $formCaptchaOptions
-     * @return ModuleOptions
+     * @param string $tableName
      */
-    public function setFormCaptchaOptions($formCaptchaOptions)
+    public function setTableName($tableName)
     {
-        $this->formCaptchaOptions = $formCaptchaOptions;
-        return $this;
+        $this->tableName = $tableName;
     }
 
     /**
@@ -561,5 +572,18 @@ class ModuleOptions extends AbstractOptions implements
     public function getFormCaptchaOptions()
     {
         return $this->formCaptchaOptions;
+    }
+
+    /**
+     * set form CAPTCHA options
+     *
+     * @param array $formCaptchaOptions
+     *
+     * @return ModuleOptions
+     */
+    public function setFormCaptchaOptions($formCaptchaOptions)
+    {
+        $this->formCaptchaOptions = $formCaptchaOptions;
+        return $this;
     }
 }

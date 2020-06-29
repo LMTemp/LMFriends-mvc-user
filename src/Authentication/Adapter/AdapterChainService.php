@@ -6,20 +6,21 @@ namespace LaminasFriends\Mvc\User\Authentication\Adapter;
 
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\Result as AuthenticationResult;
-use Laminas\EventManager\Event;
 use Laminas\EventManager\EventInterface;
+use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerAwareTrait;
 use Laminas\Stdlib\RequestInterface as Request;
 use Laminas\Stdlib\ResponseInterface as Response;
 use LaminasFriends\Mvc\User\Exception;
 
-class AdapterChain implements AdapterInterface
+/**
+ * Class AdapterChainService
+ */
+class AdapterChainService implements AdapterInterface, EventManagerAwareInterface
 {
     use EventManagerAwareTrait;
 
-    /**
-     * @var AdapterChainEvent
-     */
+    /** @var AdapterChainEvent|null */
     protected $event;
 
     /**
@@ -27,7 +28,7 @@ class AdapterChain implements AdapterInterface
      *
      * @return AuthenticationResult
      */
-    public function authenticate()
+    public function authenticate(): AuthenticationResult
     {
         $e = $this->getEvent();
 
@@ -60,8 +61,10 @@ class AdapterChain implements AdapterInterface
         $e->setName('authenticate');
         $result = $this->getEventManager()->triggerEventUntil(
             static function ($test) {
-            return ($test instanceof Response);
-        }, $e);
+                return ($test instanceof Response);
+            },
+            $e
+        );
 
         if ($result->stopped()) {
             if ($result->last() instanceof Response) {
@@ -91,9 +94,9 @@ class AdapterChain implements AdapterInterface
     /**
      * resetAdapters
      *
-     * @return AdapterChain
+     * @return AdapterChainService
      */
-    public function resetAdapters()
+    public function resetAdapters(): AdapterChainService
     {
         $sharedManager = $this->getEventManager()->getSharedManager();
 
@@ -112,9 +115,9 @@ class AdapterChain implements AdapterInterface
     /**
      * logoutAdapters
      *
-     * @return AdapterChain
+     * @return AdapterChainService
      */
-    public function logoutAdapters()
+    public function logoutAdapters(): AdapterChainService
     {
         //Adapters might need to perform additional cleanup after logout
         $e = $this->getEvent();
@@ -129,7 +132,7 @@ class AdapterChain implements AdapterInterface
      *
      * @return AdapterChainEvent
      */
-    public function getEvent()
+    public function getEvent(): AdapterChainEvent
     {
         if (null === $this->event) {
             $this->setEvent(new AdapterChainEvent());
@@ -144,10 +147,10 @@ class AdapterChain implements AdapterInterface
      *
      * By default, will re-cast to AdapterChainEvent if another event type is provided.
      *
-     * @param  Event $e
-     * @return AdapterChain
+     * @param  EventInterface $e
+     * @return AdapterChainService
      */
-    public function setEvent(Event $e)
+    public function setEvent(EventInterface $e)
     {
         if (!$e instanceof AdapterChainEvent) {
             $eventParams = $e->getParams();

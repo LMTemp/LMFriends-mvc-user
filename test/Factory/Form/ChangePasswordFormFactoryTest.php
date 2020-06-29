@@ -17,8 +17,8 @@ class ChangePasswordFormFactoryTest extends TestCase
     public function testFactory()
     {
         $serviceManager = new ServiceManager();
-        $serviceManager->setService('zfcuser_module_options', new ModuleOptions());
-        $serviceManager->setService('zfcuser_user_mapper', new UserMapper());
+        $serviceManager->setService(ModuleOptions::class, new ModuleOptions());
+        $serviceManager->setService(UserMapper::class, new UserMapper());
 
         $formElementManager = new FormElementManagerV3Polyfill($serviceManager);
         $serviceManager->setService('FormElementManager', $formElementManager);

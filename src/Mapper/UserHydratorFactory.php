@@ -2,27 +2,26 @@
 
 declare(strict_types=1);
 
-namespace LaminasFriends\Mvc\User\Authentication\Adapter;
+namespace LaminasFriends\Mvc\User\Mapper;
 
 use Interop\Container\ContainerInterface;
+use Laminas\Hydrator\ClassMethodsHydrator;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasFriends\Mvc\User\Mapper\UserMapper;
-use LaminasFriends\Mvc\User\Options\ModuleOptions;
 
 /**
- * Class DbAdapterFactory
+ * Class UserHydratorFactory
  */
-class DbAdapterFactory implements FactoryInterface
+class UserHydratorFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param array|null         $options
      *
-     * @return DbAdapter
+     * @return ClassMethodsHydrator
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new DbAdapter($container->get(UserMapper::class), $container->get(ModuleOptions::class));
+        return new ClassMethodsHydrator();
     }
 }

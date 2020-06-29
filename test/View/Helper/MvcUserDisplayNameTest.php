@@ -8,10 +8,10 @@ use Laminas\Authentication\AuthenticationService;
 use LaminasFriends\Mvc\User\Exception\DomainException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName as ViewHelper;
+use LaminasFriends\Mvc\User\View\Helper\MvcUserDisplayName;
 use LaminasFriends\Mvc\User\Entity\UserEntity;
 
-class ZfcUserDisplayNameTest extends TestCase
+class MvcUserDisplayNameTest extends TestCase
 {
     protected $helper;
 
@@ -21,20 +21,13 @@ class ZfcUserDisplayNameTest extends TestCase
 
     protected function setUp(): void
     {
-        $helper = new ViewHelper();
-        $this->helper = $helper;
-
-        $authService = $this->createMock(AuthenticationService::class);
-        $this->authService = $authService;
-
-        $user = $this->createMock(UserEntity::class);
-        $this->user = $user;
-
-        $helper->setAuthService($authService);
+        $this->authService = $this->createMock(AuthenticationService::class);
+        $this->user = $this->createMock(UserEntity::class);
+        $this->helper = new MvcUserDisplayName($this->authService);
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName::__invoke
+     * @covers \LaminasFriends\Mvc\User\View\Helper\MvcUserDisplayName::__invoke
      */
     public function testInvokeWithoutUserAndNotLoggedIn()
     {
@@ -42,13 +35,11 @@ class ZfcUserDisplayNameTest extends TestCase
                           ->method('hasIdentity')
                           ->willReturn(false);
 
-        $result = $this->helper->__invoke(null);
-
-        static::assertFalse($result);
+        static::assertNull($this->helper->__invoke(null));
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName::__invoke
+     * @covers \LaminasFriends\Mvc\User\View\Helper\MvcUserDisplayName::__invoke
      *
      */
     public function testInvokeWithoutUserButLoggedInWithWrongUserObject()
@@ -65,13 +56,13 @@ class ZfcUserDisplayNameTest extends TestCase
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName::__invoke
+     * @covers \LaminasFriends\Mvc\User\View\Helper\MvcUserDisplayName::__invoke
      */
     public function testInvokeWithoutUserButLoggedInWithDisplayName()
     {
         $this->user->expects(static::once())
                    ->method('getDisplayName')
-                   ->willReturn('zfcUser');
+                   ->willReturn('mvcUser');
 
         $this->authService->expects(static::once())
                           ->method('hasIdentity')
@@ -82,11 +73,11 @@ class ZfcUserDisplayNameTest extends TestCase
 
         $result = $this->helper->__invoke(null);
 
-        static::assertEquals('zfcUser', $result);
+        static::assertEquals('mvcUser', $result);
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName::__invoke
+     * @covers \LaminasFriends\Mvc\User\View\Helper\MvcUserDisplayName::__invoke
      */
     public function testInvokeWithoutUserButLoggedInWithoutDisplayNameButWithUsername()
     {
@@ -95,7 +86,7 @@ class ZfcUserDisplayNameTest extends TestCase
                    ->willReturn(null);
         $this->user->expects(static::once())
                    ->method('getUsername')
-                   ->willReturn('zfcUser');
+                   ->willReturn('mvcUser');
 
         $this->authService->expects(static::once())
                           ->method('hasIdentity')
@@ -106,11 +97,11 @@ class ZfcUserDisplayNameTest extends TestCase
 
         $result = $this->helper->__invoke(null);
 
-        static::assertEquals('zfcUser', $result);
+        static::assertEquals('mvcUser', $result);
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName::__invoke
+     * @covers \LaminasFriends\Mvc\User\View\Helper\MvcUserDisplayName::__invoke
      */
     public function testInvokeWithoutUserButLoggedInWithoutDisplayNameAndWithOutUsernameButWithEmail()
     {
@@ -122,7 +113,7 @@ class ZfcUserDisplayNameTest extends TestCase
                    ->willReturn(null);
         $this->user->expects(static::once())
                    ->method('getEmail')
-                   ->willReturn('zfcUser@zfcUser.com');
+                   ->willReturn('mvcUser@mvcUser.com');
 
         $this->authService->expects(static::once())
                           ->method('hasIdentity')
@@ -133,16 +124,6 @@ class ZfcUserDisplayNameTest extends TestCase
 
         $result = $this->helper->__invoke(null);
 
-        static::assertEquals('zfcUser', $result);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName::setAuthService
-     * @covers \LaminasFriends\Mvc\User\View\Helper\ZfcUserDisplayName::getAuthService
-     */
-    public function testSetGetAuthService()
-    {
-        // We set the authservice in setUp, so we dont have to set it again
-        static::assertSame($this->authService, $this->helper->getAuthService());
+        static::assertEquals('mvcUser', $result);
     }
 }

@@ -8,6 +8,7 @@ use Laminas\Mvc\Application;
 use Laminas\Router\RouteInterface;
 use Laminas\Router\Exception;
 use Laminas\Http\PhpEnvironment\Response;
+use LaminasFriends\Mvc\User\Module;
 use LaminasFriends\Mvc\User\Options\ModuleOptions;
 
 /**
@@ -103,18 +104,18 @@ class RedirectCallback
         }
 
         switch ($currentRoute) {
-            case 'zfcuser/register':
-            case 'zfcuser/login':
-            case 'zfcuser/authenticate':
+            case Module::ROUTE_REGISTER:
+            case Module::ROUTE_LOGIN:
+            case Module::ROUTE_AUTHENTICATE:
                 $route = ($redirect) ?: $this->options->getLoginRedirectRoute();
                 return $this->router->assemble([], ['name' => $route]);
                 break;
-            case 'zfcuser/logout':
+            case Module::ROUTE_LOGOUT:
                 $route = ($redirect) ?: $this->options->getLogoutRedirectRoute();
                 return $this->router->assemble([], ['name' => $route]);
                 break;
             default:
-                return $this->router->assemble([], ['name' => 'zfcuser']);
+                return $this->router->assemble([], ['name' => Module::ROUTE_BASE]);
         }
     }
 }

@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace LaminasFriends\Mvc\User\Authentication\Adapter;
+namespace LaminasFriends\Mvc\User\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasFriends\Mvc\User\Mapper\UserMapper;
-use LaminasFriends\Mvc\User\Options\ModuleOptions;
+use LaminasFriends\Mvc\User\Module;
+use LaminasFriends\Mvc\User\View;
 
 /**
- * Class DbAdapterFactory
+ * Class MvcUserIdentityFactory
  */
-class DbAdapterFactory implements FactoryInterface
+class MvcUserIdentityFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param array|null         $options
      *
-     * @return DbAdapter
+     * @return MvcUserIdentity
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new DbAdapter($container->get(UserMapper::class), $container->get(ModuleOptions::class));
+        return new MvcUserIdentity($container->get(Module::MVC_USER_AUTH_SERVICE));
     }
 }

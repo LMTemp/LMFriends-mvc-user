@@ -7,27 +7,27 @@ namespace LaminasFriends\Mvc\User\Form;
 use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerAwareTrait;
 use Laminas\InputFilter\InputFilter;
+use Laminas\Validator\ValidatorInterface;
 use LaminasFriends\Mvc\User\Options\RegistrationOptionsInterface;
 
-class RegisterFilter extends InputFilter implements EventManagerAwareInterface
+/**
+ * Class RegisterFilter
+ */
+class RegisterFormFilter extends InputFilter implements EventManagerAwareInterface
 {
     use EventManagerAwareTrait;
 
-    protected $emailValidator;
-    protected $usernameValidator;
+    protected ValidatorInterface $emailValidator;
+    protected ValidatorInterface $usernameValidator;
+    protected RegistrationOptionsInterface $options;
 
-    /**
-     * @var RegistrationOptionsInterface
-     */
-    protected $options;
-
-    public function __construct($emailValidator, $usernameValidator, RegistrationOptionsInterface $options)
+    public function __construct(ValidatorInterface $emailValidator, ValidatorInterface $usernameValidator, RegistrationOptionsInterface $options)
     {
-        $this->setOptions($options);
+        $this->options = $options;
         $this->emailValidator = $emailValidator;
         $this->usernameValidator = $usernameValidator;
 
-        if ($this->getOptions()->getEnableUsername()) {
+        if ($this->options->getEnableUsername()) {
             $this->add(
                 [
                     'name'       => 'username',
@@ -59,7 +59,7 @@ class RegisterFilter extends InputFilter implements EventManagerAwareInterface
             ]
         );
 
-        if ($this->getOptions()->getEnableDisplayName()) {
+        if ($this->options->getEnableDisplayName()) {
             $this->add(
                 [
                     'name'       => 'display_name',
@@ -115,48 +115,5 @@ class RegisterFilter extends InputFilter implements EventManagerAwareInterface
                 ],
             ]
         );
-    }
-
-    public function getEmailValidator()
-    {
-        return $this->emailValidator;
-    }
-
-    public function setEmailValidator($emailValidator)
-    {
-        $this->emailValidator = $emailValidator;
-        return $this;
-    }
-
-    public function getUsernameValidator()
-    {
-        return $this->usernameValidator;
-    }
-
-    public function setUsernameValidator($usernameValidator)
-    {
-        $this->usernameValidator = $usernameValidator;
-        return $this;
-    }
-
-    /**
-     * set options
-     *
-     * @param RegistrationOptionsInterface $options
-     */
-    public function setOptions(RegistrationOptionsInterface $options)
-    {
-        $this->options = $options;
-        return $this;
-    }
-
-    /**
-     * get options
-     *
-     * @return RegistrationOptionsInterface
-     */
-    public function getOptions()
-    {
-        return $this->options;
     }
 }

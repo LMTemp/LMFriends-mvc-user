@@ -6,25 +6,22 @@ namespace LaminasFriendsTest\Mvc\User\Validator;
 
 use PHPUnit\Framework\TestCase;
 use LaminasFriends\Mvc\User\Validator\AbstractRecord;
-use LaminasFriends\Mvc\User\Validator\NoRecordExists as Validator;
+use LaminasFriends\Mvc\User\Validator\NoRecordExists;
 use LaminasFriends\Mvc\User\Mapper\UserMapperInterface;
 
+/**
+ * Class NoRecordExistsTest
+ */
 class NoRecordExistsTest extends TestCase
 {
     protected $validator;
 
-    protected $mapper;
+    protected UserMapperInterface $mapper;
 
     protected function setUp(): void
     {
-        $options = ['key' => 'username'];
-        $validator = new Validator($options);
-        $this->validator = $validator;
-
-        $mapper = $this->createMock(UserMapperInterface::class);
-        $this->mapper = $mapper;
-
-        $validator->setMapper($mapper);
+        $this->mapper = $this->createMock(UserMapperInterface::class);
+        $this->validator = new NoRecordExists('username', $this->mapper);
     }
 
     /**
@@ -34,10 +31,10 @@ class NoRecordExistsTest extends TestCase
     {
         $this->mapper->expects(static::once())
                      ->method('findByUsername')
-                     ->with('zfcUser')
+                     ->with('mvcUser')
                      ->willReturn(false);
 
-        $result = $this->validator->isValid('zfcUser');
+        $result = $this->validator->isValid('mvcUser');
         static::assertTrue($result);
     }
 
@@ -48,14 +45,17 @@ class NoRecordExistsTest extends TestCase
     {
         $this->mapper->expects(static::once())
                      ->method('findByUsername')
-                     ->with('zfcUser')
-                     ->willReturn('zfcUser');
+                     ->with('mvcUser')
+                     ->willReturn('mvcUser');
 
-        $result = $this->validator->isValid('zfcUser');
+        $result = $this->validator->isValid('mvcUser');
         static::assertFalse($result);
 
         $options = $this->validator->getOptions();
         static::assertArrayHasKey(AbstractRecord::ERROR_RECORD_FOUND, $options['messages']);
-        static::assertEquals($options['messageTemplates'][AbstractRecord::ERROR_RECORD_FOUND], $options['messages'][AbstractRecord::ERROR_RECORD_FOUND]);
+        static::assertEquals(
+            $options['messageTemplates'][AbstractRecord::ERROR_RECORD_FOUND],
+            $options['messages'][AbstractRecord::ERROR_RECORD_FOUND]
+        );
     }
 }

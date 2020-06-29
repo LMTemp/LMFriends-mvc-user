@@ -4,30 +4,32 @@ declare(strict_types=1);
 
 use Laminas\Db\Adapter\Adapter;
 use LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter;
+use LaminasFriends\Mvc\User\Entity\UserEntity;
+use LaminasFriends\Mvc\User\Module;
 
 /**
- * ZfcUser Configuration
+ * MvcUser Configuration
  *
  * If you have a ./config/autoload/ directory set up for your project, you can
  * drop this config file in it and change the values as you wish.
  */
 $settings = [
     /**
-     * Zend\Db\Adapter\Adapter DI Alias
+     * Laminas\Db\Adapter\Adapter DI Alias
      *
-     * Please specify the DI alias for the configured Zend\Db\Adapter\Adapter
-     * instance that ZfcUser should use.
+     * Please specify the DI alias for the configured Laminas\Db\Adapter\Adapter
+     * instance that MvcUser should use.
      */
-    //'zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
+    'laminas_db_adapter' => Adapter::class,
 
     /**
      * UserService Model Entity Class
      *
      * Name of Entity class to use. Useful for using your own entity class
-     * instead of the default one provided. Default is ZfcUser\Entity\UserService.
-     * The entity class should implement ZfcUser\Entity\UserEntityInterface
+     * instead of the default one provided. Default is LaminasFriends\Mvc\User\Entity\UserEntity.
+     * The entity class should implement LaminasFriends\Mvc\User\Entity\UserEntityInterface
      */
-    //'user_entity_class' => 'ZfcUser\Entity\UserService',
+    'user_entity_class' => UserEntity::class,
 
     /**
      * Enable registration
@@ -121,7 +123,7 @@ $settings = [
      * Form Captcha Options
      *
      * Currently used for the registration form, but re-usable anywhere. Use
-     * this to configure which Zend\Captcha adapter to use, and the options to
+     * this to configure which Laminas\Captcha adapter to use, and the options to
      * pass to it. The default uses the Figlet captcha.
      */
     /*'form_captcha_options' => array(
@@ -145,10 +147,10 @@ $settings = [
     /**
      * Sets the view template for the user login widget
      *
-     * Default value: 'zfc-user/user/login.phtml'
+     * Default value: 'mvc-user/user/login.phtml'
      * Accepted values: string path to a view script
      */
-    //'user_login_widget_view_template' => 'zfc-user/user/login.phtml',
+    //'user_login_widget_view_template' => 'mvc-user/user/login.phtml',
 
     /**
      * LoginForm Redirect Route
@@ -224,7 +226,7 @@ $settings = [
     //'table_name' => 'user',
 
     /**
-     * End of ZfcUser configuration
+     * End of MvcUser configuration
      */
 ];
 
@@ -232,10 +234,10 @@ $settings = [
  * You do not need to edit below this line
  */
 return [
-    'zfcuser'         => $settings,
+    'mvcuser'         => $settings,
     'service_manager' => [
         'aliases' => [
-            'zfcuser_zend_db_adapter' => $settings['zend_db_adapter'] ?? Adapter::class,
+            Module::MVC_USER_DB_ADAPTER => $settings['laminas_db_adapter'] ?? Adapter::class,
         ],
     ],
 ];

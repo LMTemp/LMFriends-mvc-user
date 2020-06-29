@@ -7,8 +7,10 @@ namespace LaminasFriends\Mvc\User\Validator;
 use Exception;
 use Laminas\Validator\AbstractValidator;
 use LaminasFriends\Mvc\User\Mapper\UserMapperInterface;
-use LaminasFriends\Mvc\User\Validator\Exception\InvalidArgumentException;
 
+/**
+ * Class AbstractRecord
+ */
 abstract class AbstractRecord extends AbstractValidator
 {
     /**
@@ -17,81 +19,26 @@ abstract class AbstractRecord extends AbstractValidator
     public const ERROR_NO_RECORD_FOUND = 'noRecordFound';
     public const ERROR_RECORD_FOUND    = 'recordFound';
 
-    /**
-     * @var array Message templates
-     */
-    protected $messageTemplates = [
+    protected array $messageTemplates = [
         self::ERROR_NO_RECORD_FOUND => 'No record matching the input was found',
         self::ERROR_RECORD_FOUND    => 'A record matching the input was found',
     ];
+    protected UserMapperInterface $mapper;
+    protected string $key;
 
     /**
-     * @var UserMapperInterface
-     */
-    protected $mapper;
-
-    /**
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * Required options are:
-     *  - key     Field to use, 'email' or 'username'
-     */
-    public function __construct(array $options)
-    {
-        if (!array_key_exists('key', $options)) {
-            throw new InvalidArgumentException('No key provided');
-        }
-
-        $this->setKey($options['key']);
-
-        parent::__construct($options);
-    }
-
-    /**
-     * getMapper
+     * AbstractRecord constructor.
      *
-     * @return UserMapperInterface
+     * @param string              $key
+     * @param UserMapperInterface $userMapper
+     * @param array               $options
      */
-    public function getMapper()
-    {
-        return $this->mapper;
-    }
-
-    /**
-     * setMapper
-     *
-     * @param UserMapperInterface $mapper
-     *
-     * @return AbstractRecord
-     */
-    public function setMapper(UserMapperInterface $mapper)
-    {
-        $this->mapper = $mapper;
-        return $this;
-    }
-
-    /**
-     * Get key.
-     *
-     * @return string
-     */
-    public function getKey()
-    {
-        return $this->key;
-    }
-
-    /**
-     * Set key.
-     *
-     * @param string $key
-     */
-    public function setKey($key)
+    public function __construct(string $key, UserMapperInterface $userMapper, array $options = [])
     {
         $this->key = $key;
-        return $this;
+        $this->mapper = $userMapper;
+
+        parent::__construct($options);
     }
 
     /**
@@ -102,22 +49,13 @@ abstract class AbstractRecord extends AbstractValidator
      */
     protected function query($value)
     {
-        $result = false;
-
-        switch ($this->getKey()) {
+        switch ($this->key) {
             case 'email':
-                $result = $this->getMapper()->findByEmail($value);
-                break;
-
+                return $this->mapper->findByEmail($value);
             case 'username':
-                $result = $this->getMapper()->findByUsername($value);
-                break;
-
+                return $this->mapper->findByUsername($value);
             default:
-                throw new Exception('Invalid key used in ZfcUser validator');
-                break;
+                throw new Exception('Invalid key used in MvcUser validator');
         }
-
-        return $result;
     }
 }

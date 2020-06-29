@@ -62,7 +62,7 @@ Installation
 
     ```json
     "require": {  
-        "zf-commons/zfc-user": "^3.0"  
+        "zf-commons/mvc-user": "^3.0"  
     }  
     ```
 

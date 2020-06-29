@@ -5,44 +5,33 @@ declare(strict_types=1);
 namespace LaminasFriends\Mvc\User\Controller;
 
 use Interop\Container\ContainerInterface;
-use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use LaminasFriends\Mvc\User\Controller\RedirectCallback;
-use LaminasFriends\Mvc\User\Controller\UserController;
+use LaminasFriends\Mvc\User\Module;
+use LaminasFriends\Mvc\User\Options\ModuleOptions;
+use LaminasFriends\Mvc\User\Service\UserService;
 
+/**
+ * Class UserControllerFactory
+ */
 class UserControllerFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $serviceManager, $requestedName, array $options = null)
-    {
-        /* @var RedirectCallback $redirectCallback */
-        $redirectCallback = $serviceManager->get('zfcuser_redirect_callback');
-
-        /* @var UserController $controller */
-        $controller = new UserController($redirectCallback);
-        $controller->setServiceLocator($serviceManager);
-
-        $controller->setChangeEmailForm($serviceManager->get('zfcuser_change_email_form'));
-        $controller->setOptions($serviceManager->get('zfcuser_module_options'));
-        $controller->setChangePasswordForm($serviceManager->get('zfcuser_change_password_form'));
-        $controller->setLoginForm($serviceManager->get('zfcuser_login_form'));
-        $controller->setRegisterForm($serviceManager->get('zfcuser_register_form'));
-        $controller->setUserService($serviceManager->get('zfcuser_user_service'));
-
-        return $controller;
-    }
-
     /**
-     * Create service
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
      *
-     * @param ServiceLocatorInterface $controllerManager
-     * @return mixed
+     * @return UserController
      */
-    public function createService(ServiceLocatorInterface $controllerManager)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /* @var ControllerManager $controllerManager*/
-        $serviceManager = $controllerManager->getServiceLocator();
-
-        return $this->__invoke($serviceManager, null);
+        return new UserController(
+            $container->get(ModuleOptions::class),
+            $container->get(UserService::class),
+            $container->get(RedirectCallback::class),
+            $container->get(Module::MVC_USER_FORM_LOGIN),
+            $container->get(Module::MVC_USER_FORM_REGISTER),
+            $container->get(Module::MVC_USER_FORM_CHANGE_PASSWORD),
+            $container->get(Module::MVC_USER_FORM_CHANGE_EMAIL)
+        );
     }
 }

@@ -26,16 +26,4 @@ class ChangeEmailFormTest extends TestCase
         static::assertArrayHasKey('newIdentityVerify', $elements);
         static::assertArrayHasKey('credential', $elements);
     }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Form\ChangeEmailForm::getAuthenticationOptions
-     * @covers \LaminasFriends\Mvc\User\Form\ChangeEmailForm::setAuthenticationOptions
-     */
-    public function testSetGetAuthenticationOptions()
-    {
-        $options = $this->createMock(AuthenticationOptionsInterface::class);
-        $form = new Form(null, $options);
-
-        static::assertSame($options, $form->getAuthenticationOptions());
-    }
 }

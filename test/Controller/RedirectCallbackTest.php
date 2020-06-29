@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasFriendsTest\Mvc\User\Controller;
 
 use Laminas\Http\Headers;
+use LaminasFriends\Mvc\User\Module;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -82,7 +83,7 @@ class RedirectCallbackTest extends TestCase
 
         $this->router
             ->method('assemble')
-            ->with([], ['name' => 'zfcuser'])
+            ->with([], ['name' => 'mvcuser'])
             ->willReturn($url);
 
         $this->response->expects(static::once())
@@ -234,16 +235,16 @@ class RedirectCallbackTest extends TestCase
     public function providerGetRedirectNoRedirectParam()
     {
         return [
-            ['zfcuser/login', 'zfcuser', '/user', 'getLoginRedirectRoute'],
-            ['zfcuser/authenticate', 'zfcuser', '/user', 'getLoginRedirectRoute'],
-            ['zfcuser/logout', 'zfcuser/login', '/user/login', 'getLogoutRedirectRoute'],
-            ['testDefault', 'zfcuser', '/home', false],
+            [Module::ROUTE_LOGIN, Module::ROUTE_BASE, '/user', 'getLoginRedirectRoute'],
+            [Module::ROUTE_AUTHENTICATE, Module::CONTROLLER_NAME, '/user', 'getLoginRedirectRoute'],
+            [Module::ROUTE_LOGOUT, Module::ROUTE_LOGIN, '/user/login', 'getLogoutRedirectRoute'],
+            ['testDefault', Module::ROUTE_BASE, '/home', false],
         ];
     }
 
     public function testGetRedirectWithOptionOnButNoRedirect()
     {
-        $route = 'zfcuser/login';
+        $route = Module::ROUTE_LOGIN;
         $redirect = false;
         $expectedResult = '/user/login';
 
@@ -272,7 +273,7 @@ class RedirectCallbackTest extends TestCase
 
     public function testGetRedirectWithOptionOnRedirectDoesntExists()
     {
-        $route = 'zfcuser/login';
+        $route = Module::ROUTE_LOGIN;
         $redirect = 'doesntExists';
         $expectedResult = '/user/login';
 

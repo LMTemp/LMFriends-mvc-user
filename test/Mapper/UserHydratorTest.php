@@ -27,13 +27,12 @@ class UserHydratorTest extends TestCase
     public function testExtractWithInvalidUserObject()
     {
         $this->expectException(InvalidArgumentException::class);
-        $user = new StdClass();
+        $user = new stdClass();
         $this->hydrator->extract($user);
     }
 
     /**
      * @covers \LaminasFriends\Mvc\User\Mapper\UserHydrator::extract
-     * @covers \LaminasFriends\Mvc\User\Mapper\UserHydrator::mapField
      * @dataProvider dataProviderTestExtractWithValidUserObject
      * @see https://github.com/ZF-Commons/ZfcUser/pull/421
      */
@@ -50,25 +49,24 @@ class UserHydratorTest extends TestCase
     public function testHydrateWithInvalidUserObject()
     {
         $this->expectException(InvalidArgumentException::class);
-        $user = new StdClass();
+        $user = new stdClass();
         $this->hydrator->hydrate([], $user);
     }
 
     /**
      * @covers \LaminasFriends\Mvc\User\Mapper\UserHydrator::hydrate
-     * @covers \LaminasFriends\Mvc\User\Mapper\UserHydrator::mapField
      */
     public function testHydrateWithValidUserObject()
     {
         $user = new UserEntity();
 
         $expectArray = [
-            'username' => 'zfcuser',
-            'email' => 'Zfc UserService',
-            'display_name' => 'ZfcUser',
-            'password' => 'ZfcUserPassword',
+            'username' => 'mvcuser',
+            'email' => 'Mvc UserService',
+            'display_name' => 'MvcUser',
+            'password' => 'MvcUserPassword',
             'state' => 1,
-            'user_id' => 1
+            'id' => 1
         ];
 
         /** @var UserEntity $result */
@@ -79,7 +77,7 @@ class UserHydratorTest extends TestCase
         static::assertEquals($expectArray['display_name'], $result->getDisplayName());
         static::assertEquals($expectArray['password'], $result->getPassword());
         static::assertEquals($expectArray['state'], $result->getState());
-        static::assertEquals($expectArray['user_id'], $result->getId());
+        static::assertEquals($expectArray['id'], $result->getId());
     }
 
     public function dataProviderTestExtractWithValidUserObject()
@@ -87,9 +85,6 @@ class UserHydratorTest extends TestCase
         $createUserObject = static function ($data) {
             $user = new UserEntity();
             foreach ($data as $key => $value) {
-                if ($key === 'user_id') {
-                    $key='id';
-                }
                 $methode = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
                 $user->$methode($value);
             }
@@ -99,12 +94,12 @@ class UserHydratorTest extends TestCase
         $expectArray = [];
 
         $buffer = [
-            'username' => 'zfcuser',
-            'email' => 'Zfc UserService',
-            'display_name' => 'ZfcUser',
-            'password' => 'ZfcUserPassword',
+            'username' => 'mvcuser',
+            'email' => 'Mvc UserService',
+            'display_name' => 'MvcUser',
+            'password' => 'MvcUserPassword',
             'state' => 1,
-            'user_id' => 1
+            'id' => 1
         ];
 
         $return[]= [$createUserObject($buffer), $buffer];
@@ -113,10 +108,10 @@ class UserHydratorTest extends TestCase
          * @see https://github.com/ZF-Commons/ZfcUser/pull/421
          */
         $buffer = [
-            'username' => 'zfcuser',
-            'email' => 'Zfc UserService',
-            'display_name' => 'ZfcUser',
-            'password' => 'ZfcUserPassword',
+            'username' => 'mvcuser',
+            'email' => 'Mvc UserService',
+            'display_name' => 'MvcUser',
+            'password' => 'MvcUserPassword',
             'state' => 1
         ];
 

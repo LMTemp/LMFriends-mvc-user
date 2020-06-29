@@ -9,7 +9,7 @@ use Laminas\EventManager\EventManagerAwareTrait;
 use Laminas\InputFilter\InputFilter;
 use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
 
-class LoginFilter extends InputFilter implements EventManagerAwareInterface
+class LoginFormFilter extends InputFilter implements EventManagerAwareInterface
 {
     use EventManagerAwareTrait;
 

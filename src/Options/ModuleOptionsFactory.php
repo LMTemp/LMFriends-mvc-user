@@ -6,26 +6,22 @@ namespace LaminasFriends\Mvc\User\Options;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use LaminasFriends\Mvc\User\Options;
 
+/**
+ * Class ModuleOptionsFactory
+ */
 class ModuleOptionsFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
-    {
-        $config = $serviceLocator->get('Config');
-
-        return new Options\ModuleOptions($config['zfcuser'] ?? []);
-    }
-
     /**
-     * Create service
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
      *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
+     * @return ModuleOptions
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ModuleOptions
     {
-        return $this->__invoke($serviceLocator, null);
+        $config = $container->get('Config');
+        return new ModuleOptions($config['mvcuser'] ?? []);
     }
 }

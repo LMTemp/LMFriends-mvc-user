@@ -7,7 +7,7 @@ namespace LaminasFriends\Mvc\User\Form;
 use Laminas\InputFilter\InputFilter;
 use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
 
-class ChangePasswordFilter extends InputFilter
+class ChangePasswordFormFilter extends InputFilter
 {
     public function __construct(AuthenticationOptionsInterface $options)
     {

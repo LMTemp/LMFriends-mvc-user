@@ -9,9 +9,8 @@ use PHPUnit\Framework\TestCase;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainServiceFactory;
-use LaminasFriends\Mvc\User\Authentication\Adapter\Exception\OptionsNotFoundException;
 use LaminasFriends\Mvc\User\Options\ModuleOptions;
-use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain;
+use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService;
 use LaminasFriends\Mvc\User\Authentication\Adapter\AbstractAdapter;
 
 class AdapterChainServiceFactoryTest extends TestCase
@@ -66,7 +65,7 @@ class AdapterChainServiceFactoryTest extends TestCase
         $this->eventManager = $this->createMock(EventManager::class);
 
         $this->serviceLocatorArray = [
-            'zfcuser_module_options'=>$this->options,
+            ModuleOptions::class => $this->options,
             'EventManager' => $this->eventManager
         ];
 
@@ -75,7 +74,7 @@ class AdapterChainServiceFactoryTest extends TestCase
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainServiceFactory::createService
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainServiceFactory::__invoke
      */
     public function testCreateService()
     {
@@ -97,52 +96,8 @@ class AdapterChainServiceFactoryTest extends TestCase
                       ->method('getAuthAdapters')
                       ->willReturn($adapterNames);
 
-        $adapterChain = $this->factory->__invoke($this->serviceLocator, AdapterChain::class);
+        $adapterChain = $this->factory->__invoke($this->serviceLocator, AdapterChainService::class);
 
-        static::assertInstanceOf(AdapterChain::class, $adapterChain);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainServiceFactory::setOptions
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainServiceFactory::getOptions
-     */
-    public function testGetOptionWithSetter()
-    {
-        $this->factory->setOptions($this->options);
-
-        $options = $this->factory->getOptions();
-
-        static::assertInstanceOf(ModuleOptions::class, $options);
-        static::assertSame($this->options, $options);
-
-
-        $options2 = clone $this->options;
-        $this->factory->setOptions($options2);
-        $options = $this->factory->getOptions();
-
-        static::assertInstanceOf(ModuleOptions::class, $options);
-        static::assertNotSame($this->options, $options);
-        static::assertSame($options2, $options);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainServiceFactory::getOptions
-     */
-    public function testGetOptionWithLocator()
-    {
-        $options = $this->factory->getOptions($this->serviceLocator);
-
-        static::assertInstanceOf(ModuleOptions::class, $options);
-        static::assertSame($this->options, $options);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainServiceFactory::getOptions
-     *
-     */
-    public function testGetOptionFailing()
-    {
-        $this->expectException(OptionsNotFoundException::class);
-        $options = $this->factory->getOptions();
+        static::assertInstanceOf(AdapterChainService::class, $adapterChain);
     }
 }

@@ -2,32 +2,30 @@
 
 declare(strict_types=1);
 
-namespace LaminasFriends\Mvc\User\Service;
+namespace LaminasFriends\Mvc\User\Controller\Plugin;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasFriends\Mvc\User\Mapper\UserMapper;
+use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService;
 use LaminasFriends\Mvc\User\Module;
-use LaminasFriends\Mvc\User\Options\ModuleOptions;
 
 /**
- * Class UserServiceFactory
+ * Class UserAuthenticationPluginFactory
  */
-class UserServiceFactory implements FactoryInterface
+class UserAuthenticationPluginFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param array|null         $options
      *
-     * @return UserService
+     * @return UserAuthenticationPlugin
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new UserService(
-            $container->get(ModuleOptions::class),
-            $container->get(UserMapper::class),
-            $container->get(Module::MVC_USER_AUTH_SERVICE)
+        return new UserAuthenticationPlugin(
+            $container->get(Module::MVC_USER_AUTH_SERVICE),
+            $container->get(AdapterChainService::class)
         );
     }
 }

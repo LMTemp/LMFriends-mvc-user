@@ -13,19 +13,19 @@ use Laminas\EventManager\EventInterface;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ResponseCollection;
 use Laminas\EventManager\SharedEventManagerInterface;
-use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain;
+use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService;
 use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainEvent;
 use Laminas\Stdlib\RequestInterface;
 use LaminasFriends\Mvc\User\Authentication\Adapter\ChainableAdapter;
 use LaminasFriends\Mvc\User\Authentication\Storage\DbStorage;
 use LaminasFriends\Mvc\User\Exception\AuthenticationEventException;
 
-class AdapterChainTest extends TestCase
+class AdapterChainServiceTest extends TestCase
 {
     /**
      * The object to be tested.
      *
-     * @var AdapterChain
+     * @var AdapterChainService
      */
     protected $adapterChain;
 
@@ -66,7 +66,7 @@ class AdapterChainTest extends TestCase
         $this->event = null;
         $this->request = null;
 
-        $this->adapterChain = new AdapterChain();
+        $this->adapterChain = new AdapterChainService();
 
         $this->sharedEventManager = $this->createMock(SharedEventManagerInterface::class);
         //$this->sharedEventManager->expects($this->any())->method('getListeners')->will($this->returnValue([]));
@@ -79,7 +79,7 @@ class AdapterChainTest extends TestCase
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::authenticate
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::authenticate
      */
     public function testAuthenticate(): void
     {
@@ -108,7 +108,7 @@ class AdapterChainTest extends TestCase
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::resetAdapters
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::resetAdapters
      */
     public function testResetAdapters(): void
     {
@@ -135,7 +135,7 @@ class AdapterChainTest extends TestCase
 
         $result = $this->adapterChain->resetAdapters();
 
-        static::assertInstanceOf(AdapterChain::class, $result);
+        static::assertInstanceOf(AdapterChainService::class, $result);
     }
 
     /**
@@ -192,7 +192,7 @@ class AdapterChainTest extends TestCase
      * @param bool  $expected
      *
      * @dataProvider identityProvider
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::prepareForAuthentication
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::prepareForAuthentication
      */
     public function testPrepareForAuthentication($identity, $expected): void
     {
@@ -212,7 +212,7 @@ class AdapterChainTest extends TestCase
     /**
      * Test prepareForAuthentication() when the returned collection contains stopped.
      *
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::prepareForAuthentication
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::prepareForAuthentication
      */
     public function testPrepareForAuthenticationWithStoppedEvent(): void
     {
@@ -233,7 +233,7 @@ class AdapterChainTest extends TestCase
     /**
      * Test prepareForAuthentication() when the returned collection contains stopped.
      *
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::prepareForAuthentication
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::prepareForAuthentication
      *
      */
     public function testPrepareForAuthenticationWithBadEventResult(): void
@@ -252,7 +252,7 @@ class AdapterChainTest extends TestCase
     /**
      * Test getEvent() when no event has previously been set.
      *
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::getEvent
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::getEvent
      */
     public function testGetEventWithNoEventSet(): void
     {
@@ -273,8 +273,8 @@ class AdapterChainTest extends TestCase
     /**
      * Test getEvent() when an event has previously been set.
      *
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::setEvent
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::getEvent
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::setEvent
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::getEvent
      */
     public function testGetEventWithEventSet(): void
     {
@@ -292,7 +292,7 @@ class AdapterChainTest extends TestCase
     /**
      * Tests the mechanism for casting one event type to AdapterChainEvent
      *
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::setEvent
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::setEvent
      */
     public function testSetEventWithDifferentEventType(): void
     {
@@ -321,7 +321,7 @@ class AdapterChainTest extends TestCase
      * Test the logoutAdapters method.
      *
      * @depends testGetEventWithEventSet
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChain::logoutAdapters
+     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainService::logoutAdapters
      */
     public function testLogoutAdapters(): void
     {

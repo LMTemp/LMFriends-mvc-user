@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace LaminasFriendsTest\Mvc\User\Form;
 
 use PHPUnit\Framework\TestCase;
-use LaminasFriends\Mvc\User\Form\ChangePasswordFilter as Filter;
+use LaminasFriends\Mvc\User\Form\ChangePasswordFormFilter as Filter;
 use LaminasFriends\Mvc\User\Options\ModuleOptions;
 use Laminas\Validator\EmailAddress;
 
-class ChangePasswordFilterTest extends TestCase
+class ChangePasswordFormFilterTest extends TestCase
 {
     public function testConstruct()
     {

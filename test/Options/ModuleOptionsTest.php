@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace LaminasFriendsTest\Mvc\User\Options;
 
+use LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter;
+use LaminasFriends\Mvc\User\Module;
 use PHPUnit\Framework\TestCase;
 use LaminasFriends\Mvc\User\Options\ModuleOptions as Options;
 use LaminasFriends\Mvc\User\Entity\UserEntity;
-use LaminasFriends\Mvc\User\Authentication\Adapter\Db;
 
 class ModuleOptionsTest extends TestCase
 {
@@ -28,8 +29,8 @@ class ModuleOptionsTest extends TestCase
      */
     public function testSetGetLoginRedirectRoute()
     {
-        $this->options->setLoginRedirectRoute('zfcUserRoute');
-        static::assertEquals('zfcUserRoute', $this->options->getLoginRedirectRoute());
+        $this->options->setLoginRedirectRoute('mvcUserRoute');
+        static::assertEquals('mvcUserRoute', $this->options->getLoginRedirectRoute());
     }
 
     /**
@@ -37,7 +38,7 @@ class ModuleOptionsTest extends TestCase
      */
     public function testGetLoginRedirectRoute()
     {
-        static::assertEquals('zfcuser', $this->options->getLoginRedirectRoute());
+        static::assertEquals('mvcuser', $this->options->getLoginRedirectRoute());
     }
 
     /**
@@ -46,8 +47,8 @@ class ModuleOptionsTest extends TestCase
      */
     public function testSetGetLogoutRedirectRoute()
     {
-        $this->options->setLogoutRedirectRoute('zfcUserRoute');
-        static::assertEquals('zfcUserRoute', $this->options->getLogoutRedirectRoute());
+        $this->options->setLogoutRedirectRoute('mvcUserRoute');
+        static::assertEquals('mvcUserRoute', $this->options->getLogoutRedirectRoute());
     }
 
     /**
@@ -55,7 +56,7 @@ class ModuleOptionsTest extends TestCase
      */
     public function testGetLogoutRedirectRoute()
     {
-        static::assertSame('zfcuser/login', $this->options->getLogoutRedirectRoute());
+        static::assertSame(Module::ROUTE_LOGIN, $this->options->getLogoutRedirectRoute());
     }
 
     /**
@@ -82,8 +83,8 @@ class ModuleOptionsTest extends TestCase
      */
     public function testSetGetUserLoginWidgetViewTemplate()
     {
-        $this->options->setUserLoginWidgetViewTemplate('zfcUser.phtml');
-        static::assertEquals('zfcUser.phtml', $this->options->getUserLoginWidgetViewTemplate());
+        $this->options->setUserLoginWidgetViewTemplate('mvcUser.phtml');
+        static::assertEquals('mvcUser.phtml', $this->options->getUserLoginWidgetViewTemplate());
     }
 
     /**
@@ -91,7 +92,7 @@ class ModuleOptionsTest extends TestCase
      */
     public function testGetUserLoginWidgetViewTemplate()
     {
-        static::assertEquals('zfc-user/user/login.phtml', $this->options->getUserLoginWidgetViewTemplate());
+        static::assertEquals('mvc-user/user/login.phtml', $this->options->getUserLoginWidgetViewTemplate());
     }
 
     /**
@@ -225,7 +226,7 @@ class ModuleOptionsTest extends TestCase
      */
     public function testGetAuthAdapters()
     {
-        static::assertEquals([100 => Db::class], $this->options->getAuthAdapters());
+        static::assertEquals([100 => DbAdapter::class], $this->options->getAuthAdapters());
     }
 
     /**
@@ -316,8 +317,8 @@ class ModuleOptionsTest extends TestCase
      */
     public function testSetGetUserEntityClass()
     {
-        $this->options->setUserEntityClass('zfcUser');
-        static::assertEquals('zfcUser', $this->options->getUserEntityClass());
+        $this->options->setUserEntityClass('mvcUser');
+        static::assertEquals('mvcUser', $this->options->getUserEntityClass());
     }
 
     /**
@@ -352,8 +353,8 @@ class ModuleOptionsTest extends TestCase
      */
     public function testSetGetTableName()
     {
-        $this->options->setTableName('zfcUser');
-        static::assertEquals('zfcUser', $this->options->getTableName());
+        $this->options->setTableName('mvcUser');
+        static::assertEquals('mvcUser', $this->options->getTableName());
     }
 
     /**

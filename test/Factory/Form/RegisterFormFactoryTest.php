@@ -6,6 +6,7 @@ namespace LaminasFriendsTest\Mvc\User\Factory\Form;
 
 use Laminas\Form\FormElementManager\FormElementManagerV3Polyfill;
 use Laminas\Hydrator\ClassMethodsHydrator;
+use LaminasFriends\Mvc\User\Module;
 use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\ServiceManager;
 use LaminasFriends\Mvc\User\Form\RegisterFormFactory as RegisterFactory;
@@ -18,9 +19,9 @@ class RegisterFormFactoryTest extends TestCase
     public function testFactory()
     {
         $serviceManager = new ServiceManager();
-        $serviceManager->setService('zfcuser_module_options', new ModuleOptions());
-        $serviceManager->setService('zfcuser_user_mapper', new UserMapper());
-        $serviceManager->setService('zfcuser_register_form_hydrator', new ClassMethodsHydrator());
+        $serviceManager->setService(ModuleOptions::class, new ModuleOptions());
+        $serviceManager->setService(UserMapper::class, new UserMapper());
+        $serviceManager->setService(Module::MVC_USER_FORM_REGISTER_HYDRATOR, new ClassMethodsHydrator());
 
         $formElementManager = new FormElementManagerV3Polyfill($serviceManager);
         $serviceManager->setService('FormElementManager', $formElementManager);

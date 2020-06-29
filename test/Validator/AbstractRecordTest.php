@@ -13,47 +13,14 @@ use LaminasFriends\Mvc\User\Mapper\UserMapperInterface;
 
 class AbstractRecordTest extends TestCase
 {
-    /**
-     * @covers \LaminasFriends\Mvc\User\Validator\AbstractRecord::__construct
-     */
-    public function testConstructEmptyArray()
+    private $userMapper;
+
+    protected function setUp(): void
     {
-        $this->expectExceptionMessage('No key provided');
-        $this->expectException(InvalidArgumentException::class);
-        $options = [];
-        new AbstractRecordExtension($options);
+        parent::setUp();
+        $this->userMapper = $this->createMock(UserMapperInterface::class);
     }
 
-    /**
-     * @covers \LaminasFriends\Mvc\User\Validator\AbstractRecord::getMapper
-     * @covers \LaminasFriends\Mvc\User\Validator\AbstractRecord::setMapper
-     */
-    public function testGetSetMapper()
-    {
-        $options = ['key' => ''];
-        $validator = new AbstractRecordExtension($options);
-
-        static::assertNull($validator->getMapper());
-
-        $mapper = $this->createMock(UserMapperInterface::class);
-        $validator->setMapper($mapper);
-        static::assertSame($mapper, $validator->getMapper());
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Validator\AbstractRecord::getKey
-     * @covers \LaminasFriends\Mvc\User\Validator\AbstractRecord::setKey
-     */
-    public function testGetSetKey()
-    {
-        $options = ['key' => 'username'];
-        $validator = new AbstractRecordExtension($options);
-
-        static::assertEquals('username', $validator->getKey());
-
-        $validator->setKey('email');
-        static::assertEquals('email', $validator->getKey());
-    }
 
     /**
      * @covers \LaminasFriends\Mvc\User\Validator\AbstractRecord::query
@@ -62,10 +29,9 @@ class AbstractRecordTest extends TestCase
      */
     public function testQueryWithInvalidKey()
     {
-        $this->expectExceptionMessage('Invalid key used in ZfcUser validator');
+        $this->expectExceptionMessage('Invalid key used in MvcUser validator');
         $this->expectException(Exception::class);
-        $options = ['key' => 'zfcUser'];
-        $validator = new AbstractRecordExtension($options);
+        $validator = new AbstractRecordExtension('mvcUser', $this->userMapper);
 
         $method = new ReflectionMethod(AbstractRecordExtension::class, 'query');
         $method->setAccessible(true);
@@ -78,23 +44,19 @@ class AbstractRecordTest extends TestCase
      */
     public function testQueryWithKeyUsername()
     {
-        $options = ['key' => 'username'];
-        $validator = new AbstractRecordExtension($options);
+        $validator = new AbstractRecordExtension('username', $this->userMapper);
 
-        $mapper = $this->createMock(UserMapperInterface::class);
-        $mapper->expects(static::once())
+        $this->userMapper->expects(static::once())
                ->method('findByUsername')
                ->with('test')
-               ->willReturn('ZfcUser');
-
-        $validator->setMapper($mapper);
+               ->willReturn('MvcUser');
 
         $method = new ReflectionMethod(AbstractRecordExtension::class, 'query');
         $method->setAccessible(true);
 
         $result = $method->invoke($validator, 'test');
 
-        static::assertEquals('ZfcUser', $result);
+        static::assertEquals('MvcUser', $result);
     }
 
     /**
@@ -102,22 +64,20 @@ class AbstractRecordTest extends TestCase
      */
     public function testQueryWithKeyEmail()
     {
-        $options = ['key' => 'email'];
-        $validator = new AbstractRecordExtension($options);
+        $validator = new AbstractRecordExtension('email', $this->userMapper);
 
-        $mapper = $this->createMock(UserMapperInterface::class);
-        $mapper->expects(static::once())
+        $this->userMapper->expects(static::once())
             ->method('findByEmail')
             ->with('test@test.com')
-            ->willReturn('ZfcUser');
+            ->willReturn('MvcUser');
 
-        $validator->setMapper($mapper);
+
 
         $method = new ReflectionMethod(AbstractRecordExtension::class, 'query');
         $method->setAccessible(true);
 
         $result = $method->invoke($validator, 'test@test.com');
 
-        static::assertEquals('ZfcUser', $result);
+        static::assertEquals('MvcUser', $result);
     }
 }

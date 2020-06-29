@@ -4,24 +4,18 @@ declare(strict_types=1);
 
 namespace LaminasFriends\Mvc\User\Authentication\Storage;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Authentication\Exception\InvalidArgumentException;
 use Laminas\Authentication\Storage;
 use Laminas\Authentication\Storage\StorageInterface;
-use Laminas\ServiceManager\ServiceManager;
-use LaminasFriends\Mvc\User\Mapper\UserMapperInterface as UserMapper;
+use LaminasFriends\Mvc\User\Mapper\UserMapperInterface;
 
+/**
+ * Class DbStorage
+ */
 class DbStorage implements Storage\StorageInterface
 {
-    /**
-     * @var StorageInterface
-     */
-    protected $storage;
-
-    /**
-     * @var UserMapper
-     */
-    protected $mapper;
+    protected StorageInterface $storage;
+    protected UserMapperInterface $mapper;
 
     /**
      * @var mixed
@@ -29,9 +23,16 @@ class DbStorage implements Storage\StorageInterface
     protected $resolvedIdentity;
 
     /**
-     * @var ServiceManager
+     * DbStorage constructor.
+     *
+     * @param UserMapperInterface $userMapper
+     * @param StorageInterface    $storage
      */
-    protected $serviceManager;
+    public function __construct(UserMapperInterface $userMapper, StorageInterface $storage)
+    {
+        $this->mapper = $userMapper;
+        $this->storage = $storage;
+    }
 
     /**
      * Returns true if and only if storage is empty
@@ -40,12 +41,12 @@ class DbStorage implements Storage\StorageInterface
      * storage is empty or not
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
-        if ($this->getStorage()->isEmpty()) {
+        if ($this->storage->isEmpty()) {
             return true;
         }
-        $identity = $this->getStorage()->read();
+        $identity = $this->storage->read();
         if ($identity === null) {
             $this->clear();
             return true;
@@ -68,10 +69,10 @@ class DbStorage implements Storage\StorageInterface
             return $this->resolvedIdentity;
         }
 
-        $identity = $this->getStorage()->read();
+        $identity = $this->storage->read();
 
         if (is_int($identity) || is_scalar($identity)) {
-            $identity = $this->getMapper()->findById($identity);
+            $identity = $this->mapper->findById($identity);
         }
 
         if ($identity) {
@@ -90,10 +91,10 @@ class DbStorage implements Storage\StorageInterface
      * @throws InvalidArgumentException If writing $contents to storage is impossible
      * @return void
      */
-    public function write($contents)
+    public function write($contents): void
     {
         $this->resolvedIdentity = null;
-        $this->getStorage()->write($contents);
+        $this->storage->write($contents);
     }
 
     /**
@@ -102,81 +103,9 @@ class DbStorage implements Storage\StorageInterface
      * @throws InvalidArgumentException If clearing contents from storage is impossible
      * @return void
      */
-    public function clear()
+    public function clear(): void
     {
         $this->resolvedIdentity = null;
-        $this->getStorage()->clear();
-    }
-
-    /**
-     * getStorage
-     *
-     * @return Storage\StorageInterface
-     */
-    public function getStorage()
-    {
-        if (null === $this->storage) {
-            $this->setStorage(new Storage\Session());
-        }
-        return $this->storage;
-    }
-
-    /**
-     * setStorage
-     *
-     * @param Storage\StorageInterface $storage
-     * @access public
-     * @return Db
-     */
-    public function setStorage(Storage\StorageInterface $storage)
-    {
-        $this->storage = $storage;
-        return $this;
-    }
-
-    /**
-     * getMapper
-     *
-     * @return UserMapper
-     */
-    public function getMapper()
-    {
-        if (null === $this->mapper) {
-            $this->mapper = $this->getServiceManager()->get('zfcuser_user_mapper');
-        }
-        return $this->mapper;
-    }
-
-    /**
-     * setMapper
-     *
-     * @param UserMapper $mapper
-     * @return Db
-     */
-    public function setMapper(UserMapper $mapper)
-    {
-        $this->mapper = $mapper;
-        return $this;
-    }
-
-    /**
-     * Retrieve service manager instance
-     *
-     * @return ServiceManager
-     */
-    public function getServiceManager()
-    {
-        return $this->serviceManager;
-    }
-
-    /**
-     * Set service manager instance
-     *
-     * @param ContainerInterface $locator
-     * @return void
-     */
-    public function setServiceManager(ContainerInterface $serviceManager)
-    {
-        $this->serviceManager = $serviceManager;
+        $this->storage->clear();
     }
 }

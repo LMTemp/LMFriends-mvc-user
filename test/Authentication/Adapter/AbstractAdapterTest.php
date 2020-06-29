@@ -37,12 +37,12 @@ class AbstractAdapterTest extends TestCase
      */
     public function testSetGetStorage()
     {
-        $storage = new Session('ZfcUser');
-        $storage->write('zfcUser');
+        $storage = new Session('MvcUser');
+        $storage->write('mvcUser');
         $this->adapter->setStorage($storage);
 
         static::assertInstanceOf(Session::class, $this->adapter->getStorage());
-        static::assertSame('zfcUser', $this->adapter->getStorage()->read());
+        static::assertSame('mvcUser', $this->adapter->getStorage()->read());
     }
 
     /**

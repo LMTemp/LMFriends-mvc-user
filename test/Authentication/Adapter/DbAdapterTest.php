@@ -6,19 +6,17 @@ namespace LaminasFriendsTest\Mvc\User\Authentication\Adapter;
 
 use Laminas\Crypt\Password\Bcrypt;
 use Laminas\Http\Request;
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\ServiceManager\ServiceManager;
 use Laminas\Session\SessionManager;
 use Laminas\Stdlib\Parameters;
 use LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter;
+use LaminasFriends\Mvc\User\Entity\UserEntity;
+use LaminasFriends\Mvc\User\Entity\UserEntityInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use Laminas\Authentication\Result;
 use Laminas\Authentication\Storage\Session;
-use Laminas\EventManager\Event;
 use Laminas\Session\AbstractContainer;
-use LaminasFriends\Mvc\User\Mapper\UserMapper;
 use LaminasFriends\Mvc\User\Mapper\UserMapperInterface;
 use LaminasFriends\Mvc\User\Options\ModuleOptions;
 use LaminasFriends\Mvc\User\Authentication\Adapter\AdapterChainEvent;
@@ -28,7 +26,7 @@ class DbAdapterTest extends TestCase
     /**
      * The object to be tested.
      *
-     * @var Db
+     * @var DbAdapter
      */
     protected $db;
 
@@ -63,19 +61,19 @@ class DbAdapterTest extends TestCase
     /**
      * Mock of UserService.
      *
-     * @var \LaminasFriends\Mvc\User\Entity\UserEntityInterface|MockObject
+     * @var UserEntityInterface|MockObject
      */
     protected $user;
 
     protected function setUp(): void
     {
-        $this->storage = $this->createMock(Session::class);;
+        $this->storage = $this->createMock(Session::class);
         $this->authEvent = $this->createMock(AdapterChainEvent::class);
         $this->options = $this->createMock(ModuleOptions::class);
         $this->mapper = $this->createMock(UserMapperInterface::class);
-        $this->user = $this->createMock(\LaminasFriends\Mvc\User\Entity\UserEntityInterface::class);;
+        $this->user = $this->createMock(UserEntityInterface::class);
 
-        $this->db = new DbAdapter();
+        $this->db = new DbAdapter($this->mapper, $this->options);
         $this->db->setStorage($this->storage);
 
         $sessionManager = $this->createMock(SessionManager::class);
@@ -144,8 +142,6 @@ class DbAdapterTest extends TestCase
             ->with(['A record with the supplied identity could not be found.'])
             ->willReturn($this->authEvent);
 
-        $this->db->setOptions($this->options);
-
         $event = new AdapterChainEvent(null, $this->authEvent);
         $result = $this->db->authenticate($this->authEvent);
 
@@ -181,9 +177,6 @@ class DbAdapterTest extends TestCase
             ->method('getState')
             ->willReturn(1);
 
-        $this->db->setMapper($this->mapper);
-        $this->db->setOptions($this->options);
-
         $event = new AdapterChainEvent(null, $this->authEvent);
         $result = $this->db->authenticate($this->authEvent);
 
@@ -216,9 +209,6 @@ class DbAdapterTest extends TestCase
             ->method('setMessages')
             ->with(['Supplied credential is invalid.']);
 
-        $this->db->setMapper($this->mapper);
-        $this->db->setOptions($this->options);
-
         $event = new AdapterChainEvent(null, $this->authEvent);
         $result = $this->db->authenticate($this->authEvent);
 
@@ -231,7 +221,7 @@ class DbAdapterTest extends TestCase
      */
     public function testAuthenticationAuthenticatesWithEmail(): void
     {
-        $this->setAuthenticationCredentials('zfc-user@zf-commons.io');
+        $this->setAuthenticationCredentials('mvc-user@zf-commons.io');
         $this->setAuthenticationEmail();
 
         $this->options->expects(static::once())
@@ -265,9 +255,6 @@ class DbAdapterTest extends TestCase
                         ->method('setMessages')
                         ->with(['Authentication successful.'])
                         ->willReturn($this->authEvent);
-
-        $this->db->setMapper($this->mapper);
-        $this->db->setOptions($this->options);
 
         $event = new AdapterChainEvent(null, $this->authEvent);
         $result = $this->db->authenticate($this->authEvent);
@@ -320,9 +307,6 @@ class DbAdapterTest extends TestCase
                         ->with(['Authentication successful.'])
                         ->willReturn($this->authEvent);
 
-        $this->db->setMapper($this->mapper);
-        $this->db->setOptions($this->options);
-
         $event = new AdapterChainEvent(null, $this->authEvent);
         $result = $this->db->authenticate($this->authEvent);
     }
@@ -332,7 +316,7 @@ class DbAdapterTest extends TestCase
      */
     public function testUpdateUserPasswordHashWithSameCost()
     {
-        $user = $this->createMock(\LaminasFriends\Mvc\User\Entity\UserEntity::class);
+        $user = $this->createMock(UserEntity::class);
         $user->expects(static::once())
             ->method('getPassword')
             ->willReturn('$2a$10$x05G2P803MrB3jaORBXBn.QHtiYzGQOBjQ7unpEIge.Mrz6c3KiVm');
@@ -357,7 +341,7 @@ class DbAdapterTest extends TestCase
      */
     public function testUpdateUserPasswordHashWithoutSameCost()
     {
-        $user = $this->createMock(\LaminasFriends\Mvc\User\Entity\UserEntity::class);
+        $user = $this->createMock(UserEntity::class);
         $user->expects(static::once())
             ->method('getPassword')
             ->willReturn('$2a$10$x05G2P803MrB3jaORBXBn.QHtiYzGQOBjQ7unpEIge.Mrz6c3KiVm');
@@ -374,23 +358,17 @@ class DbAdapterTest extends TestCase
             ->with('ZfcUserNew')
             ->willReturn('$2a$10$D41KPuDCn6iGoESjnLee/uE/2Xo985sotVySo2HKDz6gAO4hO/Gh6');
 
-        $mapper = $this->createMock(UserMapper::class);
-        $mapper->expects(static::once())
+        $this->mapper->expects(static::once())
             ->method('update')
             ->with($user);
-
-        $this->db->setMapper($mapper);
 
         $method = new ReflectionMethod(
             DbAdapter::class,
             'updateUserPasswordHash'
         );
         $method->setAccessible(true);
-
-        $result = $method->invoke($this->db, $user, 'ZfcUserNew', $bcrypt);
-        static::assertInstanceOf(DbAdapter::class, $result);
+        $method->invoke($this->db, $user, 'ZfcUserNew', $bcrypt);
     }
-
 
     /**
      * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::preprocessCredential
@@ -422,94 +400,11 @@ class DbAdapterTest extends TestCase
         static::assertSame('zfcUser', $this->db->preProcessCredential('zfcUser'));
     }
 
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::setServiceManager
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::getServiceManager
-     */
-    public function testSetGetServicemanager()
-    {
-        $sm = $this->createMock(ServiceManager::class);
-
-        $this->db->setServiceManager($sm);
-
-        $serviceManager = $this->db->getServiceManager();
-
-        static::assertInstanceOf(ServiceLocatorInterface::class, $serviceManager);
-        static::assertSame($sm, $serviceManager);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::getOptions
-     */
-    public function testGetOptionsWithNoOptionsSet()
-    {
-        $serviceMapper = $this->createMock(ServiceManager::class);
-        $serviceMapper->expects(static::once())
-            ->method('get')
-            ->with('zfcuser_module_options')
-            ->willReturn($this->options);
-
-        $this->db->setServiceManager($serviceMapper);
-
-        $options = $this->db->getOptions();
-
-        static::assertInstanceOf(ModuleOptions::class, $options);
-        static::assertSame($this->options, $options);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::setOptions
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::getOptions
-     */
-    public function testSetGetOptions()
-    {
-        $options = new ModuleOptions();
-        $options->setLoginRedirectRoute('zfcUser');
-
-        $this->db->setOptions($options);
-
-        static::assertInstanceOf(ModuleOptions::class, $this->db->getOptions());
-        static::assertSame('zfcUser', $this->db->getOptions()->getLoginRedirectRoute());
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::getMapper
-     */
-    public function testGetMapperWithNoMapperSet()
-    {
-        $serviceMapper = $this->createMock(ServiceManager::class);
-        $serviceMapper->expects(static::once())
-            ->method('get')
-            ->with('zfcuser_user_mapper')
-            ->willReturn($this->mapper);
-
-        $this->db->setServiceManager($serviceMapper);
-
-        $mapper = $this->db->getMapper();
-        static::assertInstanceOf(UserMapperInterface::class, $mapper);
-        static::assertSame($this->mapper, $mapper);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::setMapper
-     * @covers \LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter::getMapper
-     */
-    public function testSetGetMapper()
-    {
-        $mapper = new UserMapper();
-        $mapper->setTableName('zfcUser');
-
-        $this->db->setMapper($mapper);
-
-        static::assertInstanceOf(UserMapper::class, $this->db->getMapper());
-        static::assertSame('zfcUser', $this->db->getMapper()->getTableName());
-    }
-
     protected function setAuthenticationEmail()
     {
         $this->mapper->expects(static::once())
             ->method('findByEmail')
-            ->with('zfc-user@zf-commons.io')
+            ->with('mvc-user@zf-commons.io')
             ->willReturn($this->user);
 
         $this->options->expects(static::once())

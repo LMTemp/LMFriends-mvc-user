@@ -6,7 +6,7 @@ namespace LaminasFriends\Mvc\User\Validator;
 
 class NoRecordExists extends AbstractRecord
 {
-    public function isValid($value)
+    public function isValid($value): bool
     {
         $valid = true;
         $this->setValue($value);

@@ -16,7 +16,7 @@ class LoginFormFactoryTest extends TestCase
     public function testFactory()
     {
         $serviceManager = new ServiceManager();
-        $serviceManager->setService('zfcuser_module_options', new ModuleOptions());
+        $serviceManager->setService(ModuleOptions::class, new ModuleOptions());
 
         $formElementManager = new FormElementManagerV3Polyfill($serviceManager);
         $serviceManager->setService('FormElementManager', $formElementManager);

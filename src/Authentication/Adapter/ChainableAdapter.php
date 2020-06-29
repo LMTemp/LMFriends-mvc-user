@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace LaminasFriends\Mvc\User\Authentication\Adapter;
 
 use Laminas\Authentication\Storage\StorageInterface;
-use Laminas\EventManager\EventInterface;
 
 interface ChainableAdapter
 {

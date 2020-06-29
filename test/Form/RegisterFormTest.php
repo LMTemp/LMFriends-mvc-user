@@ -56,27 +56,6 @@ class RegisterFormTest extends TestCase
         ];
     }
 
-    public function testSetGetRegistrationOptions()
-    {
-        $options = $this->createMock(RegistrationOptionsInterface::class);
-        $options->expects(static::once())
-                ->method('getEnableUsername')
-                ->willReturn(false);
-        $options->expects(static::once())
-                ->method('getEnableDisplayName')
-                ->willReturn(false);
-        $options
-                ->method('getUseRegistrationFormCaptcha')
-                ->willReturn(false);
-        $form = new Form(null, $options);
-
-        static::assertSame($options, $form->getRegistrationOptions());
-
-        $optionsNew = $this->createMock(RegistrationOptionsInterface::class);
-        $form->setRegistrationOptions($optionsNew);
-        static::assertSame($optionsNew, $form->getRegistrationOptions());
-    }
-
     public function testSetCaptchaElement()
     {
         $options = $this->createMock(RegistrationOptionsInterface::class);
@@ -98,7 +77,6 @@ class RegisterFormTest extends TestCase
         $reflection = $this->helperMakePropertyAccessable($form, 'captchaElement');
         static::assertSame($captcha, $reflection->getValue($form));
     }
-
 
     /**
      *

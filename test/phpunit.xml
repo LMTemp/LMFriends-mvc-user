@@ -7,7 +7,6 @@
          stopOnFailure="false"
          processIsolation="false"
          backupGlobals="false"
-         syntaxCheck="true"
 >
     <testsuite name="ZfcUser Test Suite">
         <directory>./</directory>

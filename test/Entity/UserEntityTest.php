@@ -33,8 +33,8 @@ class UserEntityTest extends TestCase
      */
     public function testSetGetUsername()
     {
-        $this->user->setUsername('zfcUser');
-        static::assertEquals('zfcUser', $this->user->getUsername());
+        $this->user->setUsername('MvcUser');
+        static::assertEquals('MvcUser', $this->user->getUsername());
     }
 
     /**
@@ -43,8 +43,8 @@ class UserEntityTest extends TestCase
      */
     public function testSetGetDisplayName()
     {
-        $this->user->setDisplayName('Zfc UserService');
-        static::assertEquals('Zfc UserService', $this->user->getDisplayName());
+        $this->user->setDisplayName('Mvc UserService');
+        static::assertEquals('Mvc UserService', $this->user->getDisplayName());
     }
 
     /**
@@ -53,8 +53,8 @@ class UserEntityTest extends TestCase
      */
     public function testSetGetEmail()
     {
-        $this->user->setEmail('zfcUser@zfcUser.com');
-        static::assertEquals('zfcUser@zfcUser.com', $this->user->getEmail());
+        $this->user->setEmail('mvcUser@mvcUser.com');
+        static::assertEquals('mvcUser@mvcUser.com', $this->user->getEmail());
     }
 
     /**
@@ -63,8 +63,8 @@ class UserEntityTest extends TestCase
      */
     public function testSetGetPassword()
     {
-        $this->user->setPassword('zfcUser');
-        static::assertEquals('zfcUser', $this->user->getPassword());
+        $this->user->setPassword('mvcUser');
+        static::assertEquals('mvcUser', $this->user->getPassword());
     }
 
     /**

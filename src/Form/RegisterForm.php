@@ -7,6 +7,9 @@ namespace LaminasFriends\Mvc\User\Form;
 use Laminas\Form\Element\Captcha;
 use LaminasFriends\Mvc\User\Options\RegistrationOptionsInterface;
 
+/**
+ * Class RegisterForm
+ */
 class RegisterForm extends Base
 {
     protected $captchaElement;
@@ -14,7 +17,7 @@ class RegisterForm extends Base
     /**
      * @var RegistrationOptionsInterface
      */
-    protected $registrationOptions;
+    protected RegistrationOptionsInterface $registrationOptions;
 
     /**
      * @param string|null $name
@@ -22,31 +25,30 @@ class RegisterForm extends Base
      */
     public function __construct($name, RegistrationOptionsInterface $options)
     {
-        $this->setRegistrationOptions($options);
-
+        $this->registrationOptions = $options;
         parent::__construct($name);
 
-        if ($this->getRegistrationOptions()->getUseRegistrationFormCaptcha()) {
+        if ($this->registrationOptions->getUseRegistrationFormCaptcha()) {
             $this->add(
                 [
                     'name' => 'captcha',
                     'type' => Captcha::class,
                     'options' => [
                     'label' => 'Please type the following text',
-                    'captcha' => $this->getRegistrationOptions()->getFormCaptchaOptions(),
+                    'captcha' => $this->registrationOptions->getFormCaptchaOptions(),
                     ],
                 ]
             );
         }
 
         $this->remove('userId');
-        if (!$this->getRegistrationOptions()->getEnableUsername()) {
+        if (!$this->registrationOptions->getEnableUsername()) {
             $this->remove('username');
         }
-        if (!$this->getRegistrationOptions()->getEnableDisplayName()) {
+        if (!$this->registrationOptions->getEnableDisplayName()) {
             $this->remove('display_name');
         }
-        if ($this->captchaElement && $this->getRegistrationOptions()->getUseRegistrationFormCaptcha()) {
+        if ($this->captchaElement && $this->registrationOptions->getUseRegistrationFormCaptcha()) {
             $this->add($this->captchaElement, ['name' => 'captcha']);
         }
         $this->get('submit')->setLabel('RegisterForm');
@@ -54,29 +56,6 @@ class RegisterForm extends Base
 
     public function setCaptchaElement(Captcha $captchaElement)
     {
-        $this->captchaElement= $captchaElement;
-    }
-
-    /**
-     * Set Registration Options
-     *
-     * @param RegistrationOptionsInterface $registrationOptions
-     *
-     * @return RegisterForm
-     */
-    public function setRegistrationOptions(RegistrationOptionsInterface $registrationOptions)
-    {
-        $this->registrationOptions = $registrationOptions;
-        return $this;
-    }
-
-    /**
-     * Get Registration Options
-     *
-     * @return RegistrationOptionsInterface
-     */
-    public function getRegistrationOptions()
-    {
-        return $this->registrationOptions;
+        $this->captchaElement = $captchaElement;
     }
 }

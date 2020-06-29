@@ -5,13 +5,23 @@ declare(strict_types=1);
 namespace LaminasFriends\Mvc\User\Form;
 
 use Laminas\InputFilter\InputFilter;
+use Laminas\Validator\ValidatorInterface;
 use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
 
-class ChangeEmailFilter extends InputFilter
+/**
+ * Class ChangeEmailFormFilter
+ */
+class ChangeEmailFormFilter extends InputFilter
 {
-    protected $emailValidator;
+    protected ValidatorInterface $emailValidator;
 
-    public function __construct(AuthenticationOptionsInterface $options, $emailValidator)
+    /**
+     * ChangeEmailFormFilter constructor.
+     *
+     * @param AuthenticationOptionsInterface $options
+     * @param ValidatorInterface             $emailValidator
+     */
+    public function __construct(AuthenticationOptionsInterface $options, ValidatorInterface $emailValidator)
     {
         $this->emailValidator = $emailValidator;
 
@@ -56,16 +66,5 @@ class ChangeEmailFilter extends InputFilter
                 ],
             ]
         );
-    }
-
-    public function getEmailValidator()
-    {
-        return $this->emailValidator;
-    }
-
-    public function setEmailValidator($emailValidator)
-    {
-        $this->emailValidator = $emailValidator;
-        return $this;
     }
 }

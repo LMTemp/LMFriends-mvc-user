@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace LaminasFriendsTest\Mvc\User\Form;
 
 use PHPUnit\Framework\TestCase;
-use LaminasFriends\Mvc\User\Form\LoginFilter as Filter;
+use LaminasFriends\Mvc\User\Form\LoginFormFilter as Filter;
 use LaminasFriends\Mvc\User\Options\ModuleOptions;
 use Laminas\Validator\EmailAddress;
 
-class LoginFilterTest extends TestCase
+class LoginFormFilterTest extends TestCase
 {
     /**
-     * @covers \LaminasFriends\Mvc\User\Form\LoginFilter::__construct
+     * @covers \LaminasFriends\Mvc\User\Form\LoginFormFilter::__construct
      */
     public function testConstruct()
     {
@@ -31,7 +31,7 @@ class LoginFilterTest extends TestCase
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\Form\LoginFilter::__construct
+     * @covers \LaminasFriends\Mvc\User\Form\LoginFormFilter::__construct
      */
     public function testConstructIdentityEmail()
     {

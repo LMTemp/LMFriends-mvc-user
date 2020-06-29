@@ -6,38 +6,33 @@ namespace LaminasFriends\Mvc\User\Mapper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use LaminasFriends\Mvc\User\Mapper;
+use LaminasFriends\Mvc\User\Module;
 use LaminasFriends\Mvc\User\Options\ModuleOptions;
 
+/**
+ * Class UserMapperFactory
+ */
 class UserMapperFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
+    /**
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
+     *
+     * @return UserMapper
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var ModuleOptions $moduleOptions */
-        $moduleOptions = $serviceLocator->get('zfcuser_module_options');
-        $dbAdapter = $serviceLocator->get('zfcuser_zend_db_adapter');
-
+        $moduleOptions = $container->get(ModuleOptions::class);
         $entityClass = $moduleOptions->getUserEntityClass();
-        $tableName = $moduleOptions->getTableName();
 
         $mapper = new Mapper\UserMapper();
-        $mapper->setDbAdapter($dbAdapter);
-        $mapper->setTableName($tableName);
+        $mapper->setDbAdapter($container->get(Module::MVC_USER_DB_ADAPTER));
+        $mapper->setTableName($moduleOptions->getTableName());
         $mapper->setEntityPrototype(new $entityClass());
-        $mapper->setHydrator(new Mapper\UserHydrator());
+        $mapper->setHydrator(new UserHydrator());
 
         return $mapper;
-    }
-
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        return $this->__invoke($serviceLocator, null);
     }
 }

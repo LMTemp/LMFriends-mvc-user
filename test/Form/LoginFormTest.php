@@ -42,9 +42,8 @@ class LoginFormTest extends TestCase
 
     /**
      * @covers \LaminasFriends\Mvc\User\Form\LoginForm::getAuthenticationOptions
-     * @covers \LaminasFriends\Mvc\User\Form\LoginForm::setAuthenticationOptions
      */
-    public function testSetGetAuthenticationOptions()
+    public function testGetAuthenticationOptions()
     {
         $options = $this->createMock(AuthenticationOptionsInterface::class);
         $options->expects(static::once())

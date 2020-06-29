@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ZfcBase\Db\Adapter;
+namespace LaminasFriends\Mvc\User\Db\Adapter;
 
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Platform;
 use Laminas\Db\ResultSet;
 
@@ -18,7 +19,7 @@ class MasterSlaveAdapter extends Adapter implements MasterSlaveAdapterInterface
     protected $slaveAdapter;
     /**
      * @param Adapter $slaveAdapter
-     * @param Driver\DriverInterface|array $driver
+     * @param DriverInterface|array $driver
      * @param Platform\PlatformInterface $platform
      * @param ResultSet\ResultSet $queryResultPrototype
      */

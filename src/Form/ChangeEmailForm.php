@@ -12,14 +12,12 @@ use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
 class ChangeEmailForm extends Form implements EventManagerAwareInterface
 {
     use EventManagerAwareTrait;
-    /**
-     * @var AuthenticationOptionsInterface
-     */
-    protected $authOptions;
 
-    public function __construct($name, AuthenticationOptionsInterface $options)
+    protected AuthenticationOptionsInterface $authOptions;
+
+    public function __construct($name, AuthenticationOptionsInterface $authOptions)
     {
-        $this->setAuthenticationOptions($options);
+        $this->authOptions = $authOptions;
 
         parent::__construct($name);
 
@@ -81,29 +79,5 @@ class ChangeEmailForm extends Form implements EventManagerAwareInterface
                 ],
             ]
         );
-    }
-
-    /**
-     * Set Authentication-related Options
-     *
-     * @param AuthenticationOptionsInterface $authOptions
-     *
-     * @return ChangeEmailForm
-     */
-    public function setAuthenticationOptions(AuthenticationOptionsInterface $authOptions)
-    {
-        $this->authOptions = $authOptions;
-
-        return $this;
-    }
-
-    /**
-     * Get Authentication-related Options
-     *
-     * @return AuthenticationOptionsInterface
-     */
-    public function getAuthenticationOptions()
-    {
-        return $this->authOptions;
     }
 }

@@ -4,42 +4,47 @@ declare(strict_types=1);
 
 namespace LaminasFriends\Mvc\User\View\Helper;
 
+use Laminas\Authentication\AuthenticationServiceInterface;
 use Laminas\View\Helper\AbstractHelper;
-use Laminas\Authentication\AuthenticationService;
-use LaminasFriends\Mvc\User\Entity\UserEntityInterface as User;
 use LaminasFriends\Mvc\User\Entity\UserEntityInterface;
 use LaminasFriends\Mvc\User\Exception\DomainException;
 
-class ZfcUserDisplayName extends AbstractHelper
+/**
+ * Class MvcUserDisplayName
+ */
+class MvcUserDisplayName extends AbstractHelper
 {
-    /**
-     * @var AuthenticationService
-     */
-    protected $authService;
+    protected AuthenticationServiceInterface $authService;
 
     /**
-     * __invoke
+     * MvcUserDisplayName constructor.
      *
-     * @access public
-     *
-     * @param UserEntityInterface $user
-     *
-     * @return String
-     *@throws DomainException
+     * @param AuthenticationServiceInterface $authService
      */
-    public function __invoke(User $user = null)
+    public function __construct(AuthenticationServiceInterface $authService)
+    {
+        $this->authService = $authService;
+    }
+
+    /**
+     * @param UserEntityInterface|null $user
+     *
+     * @return string|null
+     * @throws DomainException
+     */
+    public function __invoke(UserEntityInterface $user = null): ?string
     {
         if (null === $user) {
             if ($this->getAuthService()->hasIdentity()) {
                 $user = $this->getAuthService()->getIdentity();
-                if (!$user instanceof User) {
+                if (!$user instanceof UserEntityInterface) {
                     throw new DomainException(
-                        '$user is not an instance of UserService',
+                        '$user is not an instance of '.UserEntityInterface::class,
                         500
                     );
                 }
             } else {
-                return false;
+                return null;
             }
         }
 
@@ -59,22 +64,10 @@ class ZfcUserDisplayName extends AbstractHelper
     /**
      * Get authService.
      *
-     * @return AuthenticationService
+     * @return AuthenticationServiceInterface
      */
-    public function getAuthService()
+    public function getAuthService(): AuthenticationServiceInterface
     {
         return $this->authService;
-    }
-
-    /**
-     * Set authService.
-     *
-     * @param AuthenticationService $authService
-     * @return ZfcUserDisplayName
-     */
-    public function setAuthService(AuthenticationService $authService)
-    {
-        $this->authService = $authService;
-        return $this;
     }
 }
