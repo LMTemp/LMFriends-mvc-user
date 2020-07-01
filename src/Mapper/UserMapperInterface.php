@@ -33,10 +33,10 @@ interface UserMapperInterface
     /**
      * @param UserEntityInterface $user
      */
-    public function insert(UserEntityInterface $user): ResultInterface;
+    public function insert(UserEntityInterface $user);
 
     /**
      * @param UserEntityInterface $user
      */
-    public function update(UserEntityInterface $user): ResultInterface;
+    public function update(UserEntityInterface $user);
 }

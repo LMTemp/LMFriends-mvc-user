@@ -58,7 +58,7 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
         $this->tableName = $tableName;
     }
 
-    public function insert(UserEntityInterface $entity, $tableName = null, HydratorInterface $hydrator = null): ResultInterface
+    public function insert(UserEntityInterface $entity, $tableName = null, HydratorInterface $hydrator = null)
     {
         $result = parent::insert($entity, $tableName, $hydrator);
 
@@ -75,7 +75,7 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
      *
      * @return ResultInterface
      */
-    public function update(UserEntityInterface $entity, $where = null, $tableName = null, HydratorInterface $hydrator = null): ResultInterface
+    public function update(UserEntityInterface $entity, $where = null, $tableName = null, HydratorInterface $hydrator = null)
     {
         if (!$where) {
             $where = ['id' => $entity->getId()];
