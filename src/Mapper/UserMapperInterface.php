@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasFriends\Mvc\User\Mapper;
 
+use Laminas\Db\Adapter\Driver\ResultInterface;
 use LaminasFriends\Mvc\User\Entity\UserEntityInterface;
 
 interface UserMapperInterface
@@ -13,14 +14,14 @@ interface UserMapperInterface
      *
      * @return UserEntityInterface
      */
-    public function findByEmail($email);
+    public function findByEmail(string $email);
 
     /**
      * @param string $username
      *
      * @return UserEntityInterface
      */
-    public function findByUsername($username);
+    public function findByUsername(string $username);
 
     /**
      * @param string|int $id
@@ -32,10 +33,10 @@ interface UserMapperInterface
     /**
      * @param UserEntityInterface $user
      */
-    public function insert(UserEntityInterface $user);
+    public function insert(UserEntityInterface $user): ResultInterface;
 
     /**
      * @param UserEntityInterface $user
      */
-    public function update(UserEntityInterface $user);
+    public function update(UserEntityInterface $user): ResultInterface;
 }

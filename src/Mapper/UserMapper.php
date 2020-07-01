@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace LaminasFriends\Mvc\User\Mapper;
 
+use Laminas\Db\Adapter\Driver\ResultInterface;
 use LaminasFriends\Mvc\User\Entity\UserEntityInterface;
 use Laminas\Hydrator\HydratorInterface;
 
+/**
+ * Class UserMapper
+ */
 class UserMapper extends AbstractDbMapper implements UserMapperInterface
 {
-    protected $tableName  = 'user';
+    protected string $tableName  = 'user';
 
-
-    public function __construct()
-    {
-
-    }
-
-
-    public function findByEmail($email)
+    public function findByEmail(string $email)
     {
         $select = $this->getSelect()
                        ->where(['email' => $email]);
@@ -29,7 +26,7 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
         return $entity;
     }
 
-    public function findByUsername($username)
+    public function findByUsername(string $username)
     {
         $select = $this->getSelect()
                        ->where(['username' => $username]);
@@ -61,7 +58,7 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
         $this->tableName = $tableName;
     }
 
-    public function insert(UserEntityInterface $entity, $tableName = null, HydratorInterface $hydrator = null)
+    public function insert(UserEntityInterface $entity, $tableName = null, HydratorInterface $hydrator = null): ResultInterface
     {
         $result = parent::insert($entity, $tableName, $hydrator);
 
@@ -70,7 +67,15 @@ class UserMapper extends AbstractDbMapper implements UserMapperInterface
         return $result;
     }
 
-    public function update(UserEntityInterface $entity, $where = null, $tableName = null, HydratorInterface $hydrator = null)
+    /**
+     * @param UserEntityInterface    $entity
+     * @param null                   $where
+     * @param string|null            $tableName
+     * @param HydratorInterface|null $hydrator
+     *
+     * @return ResultInterface
+     */
+    public function update(UserEntityInterface $entity, $where = null, $tableName = null, HydratorInterface $hydrator = null): ResultInterface
     {
         if (!$where) {
             $where = ['id' => $entity->getId()];

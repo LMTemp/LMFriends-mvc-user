@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasFriendsTest\Mvc\User\Form;
 
+use Laminas\Captcha\Figlet;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use LaminasFriends\Mvc\User\Form\RegisterForm as Form;
@@ -33,7 +34,14 @@ class RegisterFormTest extends TestCase
 
             $options->expects(static::once())
                 ->method('getFormCaptchaOptions')
-                ->willReturn($captcha);
+                ->willReturn([
+                     'class'   => Figlet::class,
+                     'options' => [
+                         'wordLen'    => 5,
+                         'expiration' => 300,
+                         'timeout'    => 300,
+                     ],
+                 ]);
         }
 
         $form = new Form(null, $options);

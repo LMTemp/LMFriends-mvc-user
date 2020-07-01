@@ -54,7 +54,7 @@ class RegisterForm extends Base
         $this->get('submit')->setLabel('RegisterForm');
     }
 
-    public function setCaptchaElement(Captcha $captchaElement)
+    public function setCaptchaElement(Captcha $captchaElement): void
     {
         $this->captchaElement = $captchaElement;
     }

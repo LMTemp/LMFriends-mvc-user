@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasFriendsTest\Mvc\User\Options;
 
+use Laminas\Captcha\Figlet;
 use LaminasFriends\Mvc\User\Authentication\Adapter\DbAdapter;
 use LaminasFriends\Mvc\User\Module;
 use PHPUnit\Framework\TestCase;
@@ -387,7 +388,7 @@ class ModuleOptionsTest extends TestCase
     public function testGetFormCaptchaOptions()
     {
         $expected = [
-            'class'   => 'figlet',
+            'class'   => Figlet::class,
             'options' => [
                 'wordLen'    => 5,
                 'expiration' => 300,

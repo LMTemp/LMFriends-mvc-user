@@ -61,7 +61,7 @@ return [
             ModuleOptions::class         => ModuleOptionsFactory::class,
             AdapterChainService::class   => AdapterChainServiceFactory::class,
 
-            // We alias this one because it's ZfcUser's instance of
+            // We alias this one because it's MvcUser's instance of
             // Laminas\Authentication\AuthenticationServiceFactory. We don't want to
             // hog the FQCN service alias for a Laminas\* class.
             Module::MVC_USER_AUTH_SERVICE => AuthenticationServiceFactory::class,

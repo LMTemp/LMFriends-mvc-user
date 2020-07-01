@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasFriendsTest\Mvc\User\Service;
 
+use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Form\FormInterface;
 use LaminasFriends\Mvc\User\Options\UserServiceOptionsInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -61,6 +62,7 @@ class UserServiceTest extends TestCase
      */
     public function testRegister()
     {
+        $resultSet = $this->createMock(ResultInterface::class);
         $formUser = new UserEntity();
         $formUser->setUsername('MvcUser');
         $formUser->setDisplayName('Mvc UserService');
@@ -83,7 +85,7 @@ class UserServiceTest extends TestCase
         $this->mapper->expects(static::once())
             ->method('insert')
             ->with($user)
-            ->willReturn($user);
+            ->willReturn($resultSet);
 
         $result = $this->service->register($user);
 
@@ -96,6 +98,7 @@ class UserServiceTest extends TestCase
      */
     public function testRegisterWithDefaultUserStateOfZero()
     {
+        $resultSet = $this->createMock(ResultInterface::class);
         $formUser = new UserEntity();
         $formUser->setUsername('MvcUser');
         $formUser->setDisplayName('Mvc UserService');
@@ -118,7 +121,7 @@ class UserServiceTest extends TestCase
         $this->mapper->expects(static::once())
                      ->method('insert')
                      ->with($user)
-                     ->willReturn($user);
+                     ->willReturn($resultSet);
 
         $result = $this->service->register($user);
 

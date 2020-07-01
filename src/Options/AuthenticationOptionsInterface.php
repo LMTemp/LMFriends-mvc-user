@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LaminasFriends\Mvc\User\Options;
 
+/**
+ * Interface AuthenticationOptionsInterface
+ */
 interface AuthenticationOptionsInterface extends PasswordOptionsInterface
 {
 
@@ -11,28 +14,29 @@ interface AuthenticationOptionsInterface extends PasswordOptionsInterface
      * set login form timeout in seconds
      *
      * @param int $loginFormTimeout
+     * @return void
      */
-    public function setLoginFormTimeout($loginFormTimeout);
+    public function setLoginFormTimeout(int $loginFormTimeout): void;
 
     /**
-     * set login form timeout in seconds
+     * get login form timeout in seconds
      *
-     * @param int $loginFormTimeout
+     * @return int
      */
-    public function getLoginFormTimeout();
+    public function getLoginFormTimeout(): int;
 
     /**
      * set auth identity fields
      *
      * @param array $authIdentityFields
-     * @return ModuleOptions
+     * @return void
      */
-    public function setAuthIdentityFields($authIdentityFields);
+    public function setAuthIdentityFields(array $authIdentityFields): void;
 
     /**
      * get auth identity fields
      *
      * @return array
      */
-    public function getAuthIdentityFields();
+    public function getAuthIdentityFields(): array;
 }
