@@ -23,6 +23,6 @@ class DbStorageFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new DbStorage($container->get(UserMapper::class), $container->get(Session::class));
+        return new DbStorage($container->get(UserMapper::class), new Session());
     }
 }
