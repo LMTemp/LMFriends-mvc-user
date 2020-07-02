@@ -24,8 +24,8 @@ class UserAuthenticationPluginFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new UserAuthenticationPlugin(
-            $container->get(Module::MVC_USER_AUTH_SERVICE),
-            $container->get(AdapterChainService::class)
+            $container->get(AdapterChainService::class),
+            $container->get(Module::MVC_USER_AUTH_SERVICE)
         );
     }
 }
