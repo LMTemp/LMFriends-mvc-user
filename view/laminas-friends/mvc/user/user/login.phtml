@@ -9,7 +9,7 @@ use LaminasFriends\Mvc\User\Module;
 <?php
 $form = $this->loginForm;
 $form->prepare();
-$form->setAttribute('action', $this->url('zfcuser/login'));
+$form->setAttribute('action', $this->url(Module::ROUTE_LOGIN));
 $form->setAttribute('method', 'post');
 $form->setAttribute('autocomplete', 'off');
 ?>

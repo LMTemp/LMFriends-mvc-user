@@ -98,7 +98,7 @@ class DbAdapterTest extends TestCase
     {
         $this->authEvent->expects(static::once())
                         ->method('setIdentity')
-                        ->with('ZfcUser')
+                        ->with('MvcUser')
                         ->willReturn($this->authEvent);
         $this->authEvent->expects(static::once())
                         ->method('setCode')
@@ -114,7 +114,7 @@ class DbAdapterTest extends TestCase
             ->willReturn(['is_satisfied' => true]);
         $this->storage->expects(static::at(1))
             ->method('read')
-            ->willReturn(['identity' => 'ZfcUser']);
+            ->willReturn(['identity' => 'MvcUser']);
 
         $event = new AdapterChainEvent(null, $this->authEvent);
 
@@ -332,7 +332,7 @@ class DbAdapterTest extends TestCase
         );
         $method->setAccessible(true);
 
-        $result = $method->invoke($this->db, $user, 'ZfcUser', $bcrypt);
+        $result = $method->invoke($this->db, $user, 'MvcUser', $bcrypt);
         static::assertNull($result);
     }
 
@@ -347,7 +347,7 @@ class DbAdapterTest extends TestCase
             ->willReturn('$2a$10$x05G2P803MrB3jaORBXBn.QHtiYzGQOBjQ7unpEIge.Mrz6c3KiVm');
         $user->expects(static::once())
             ->method('setPassword')
-            ->with('$2a$10$D41KPuDCn6iGoESjnLee/uE/2Xo985sotVySo2HKDz6gAO4hO/Gh6');
+            ->with('$2a$10$tkkfIsBuWt11j2eh0HeQYOaMsoI28aeUIYeZijg4dkT1VSaMILT.y');
 
         $bcrypt = $this->createMock(Bcrypt::class);
         $bcrypt->expects(static::once())
@@ -355,8 +355,8 @@ class DbAdapterTest extends TestCase
             ->willReturn('5');
         $bcrypt->expects(static::once())
             ->method('create')
-            ->with('ZfcUserNew')
-            ->willReturn('$2a$10$D41KPuDCn6iGoESjnLee/uE/2Xo985sotVySo2HKDz6gAO4hO/Gh6');
+            ->with('MvcUserNew')
+            ->willReturn('$2a$10$tkkfIsBuWt11j2eh0HeQYOaMsoI28aeUIYeZijg4dkT1VSaMILT.y');
 
         $this->mapper->expects(static::once())
             ->method('update')
@@ -367,7 +367,7 @@ class DbAdapterTest extends TestCase
             'updateUserPasswordHash'
         );
         $method->setAccessible(true);
-        $method->invoke($this->db, $user, 'ZfcUserNew', $bcrypt);
+        $method->invoke($this->db, $user, 'MvcUserNew', $bcrypt);
     }
 
     /**
@@ -380,12 +380,12 @@ class DbAdapterTest extends TestCase
         $test = $this;
         $testVar = false;
         $callable = static function ($credential) use ($test, &$testVar) {
-            $test::assertEquals('ZfcUser', $credential);
+            $test::assertEquals('MvcUser', $credential);
             $testVar = true;
         };
         $this->db->setCredentialPreprocessor($callable);
 
-        $this->db->preProcessCredential('ZfcUser');
+        $this->db->preProcessCredential('MvcUser');
         static::assertTrue($testVar);
     }
 
@@ -397,7 +397,7 @@ class DbAdapterTest extends TestCase
     public function testPreprocessCredentialWithoutCallable()
     {
         $this->db->setCredentialPreprocessor(false);
-        static::assertSame('zfcUser', $this->db->preProcessCredential('zfcUser'));
+        static::assertSame('mvcUser', $this->db->preProcessCredential('mvcUser'));
     }
 
     protected function setAuthenticationEmail()
@@ -416,7 +416,7 @@ class DbAdapterTest extends TestCase
     {
         $this->mapper->expects(static::once())
             ->method('findByUsername')
-            ->with('ZfcUser')
+            ->with('MvcUser')
             ->willReturn($this->user);
 
         $this->options->expects(static::once())
@@ -424,7 +424,7 @@ class DbAdapterTest extends TestCase
             ->willReturn(['username']);
     }
 
-    protected function setAuthenticationCredentials($identity = 'ZfcUser', $credential = 'ZfcUserPassword')
+    protected function setAuthenticationCredentials($identity = 'MvcUser', $credential = 'MvcUserPassword')
     {
         $this->storage->expects(static::at(0))
             ->method('read')
