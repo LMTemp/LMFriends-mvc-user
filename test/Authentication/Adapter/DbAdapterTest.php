@@ -234,7 +234,7 @@ class DbAdapterTest extends TestCase
 
         $this->user->expects(static::exactly(2))
             ->method('getPassword')
-            ->willReturn('$2a$04$5kq1mnYWbww8X.rIj7eOVOHXtvGw/peefjIcm0lDGxRTEjm9LnOae');
+            ->willReturn('$2a$04$RDfX2rbr704x2Oy9TLaeaebIlIvoqXkjoL./pQsSwrwUIKGHeVVvC');
         $this->user->expects(static::once())
                    ->method('getId')
                    ->willReturn(1);
@@ -282,7 +282,7 @@ class DbAdapterTest extends TestCase
 
         $this->user->expects(static::exactly(2))
                    ->method('getPassword')
-                   ->willReturn('$2a$04$5kq1mnYWbww8X.rIj7eOVOHXtvGw/peefjIcm0lDGxRTEjm9LnOae');
+                   ->willReturn('$2a$04$RDfX2rbr704x2Oy9TLaeaebIlIvoqXkjoL./pQsSwrwUIKGHeVVvC');
         $this->user->expects(static::once())
                    ->method('getId')
                    ->willReturn(1);
