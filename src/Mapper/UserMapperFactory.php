@@ -6,7 +6,6 @@ namespace LaminasFriends\Mvc\User\Mapper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasFriends\Mvc\User\Mapper;
 use LaminasFriends\Mvc\User\Module;
 use LaminasFriends\Mvc\User\Options\ModuleOptions;
 
@@ -27,7 +26,7 @@ class UserMapperFactory implements FactoryInterface
         $moduleOptions = $container->get(ModuleOptions::class);
         $entityClass = $moduleOptions->getUserEntityClass();
 
-        $mapper = new Mapper\UserMapper();
+        $mapper = new UserMapper();
         $mapper->setDbAdapter($container->get(Module::MVC_USER_DB_ADAPTER));
         $mapper->setTableName($moduleOptions->getTableName());
         $mapper->setEntityPrototype(new $entityClass());
