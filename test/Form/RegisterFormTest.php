@@ -54,6 +54,7 @@ class RegisterFormTest extends TestCase
         static::assertArrayHasKey('email', $elements);
         static::assertArrayHasKey('password', $elements);
         static::assertArrayHasKey('passwordVerify', $elements);
+        static::assertArrayHasKey('security', $elements);
     }
 
     public function providerTestConstruct()

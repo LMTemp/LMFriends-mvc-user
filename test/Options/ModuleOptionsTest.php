@@ -133,24 +133,6 @@ class ModuleOptionsTest extends TestCase
     }
 
     /**
-     * @covers \LaminasFriends\Mvc\User\Options\ModuleOptions::getUserFormTimeout
-     * @covers \LaminasFriends\Mvc\User\Options\ModuleOptions::setUserFormTimeout
-     */
-    public function testSetGetUserFormTimeout()
-    {
-        $this->options->setUserFormTimeout(100);
-        static::assertEquals(100, $this->options->getUserFormTimeout());
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Options\ModuleOptions::getUserFormTimeout
-     */
-    public function testGetUserFormTimeout()
-    {
-        static::assertEquals(300, $this->options->getUserFormTimeout());
-    }
-
-    /**
      * @covers \LaminasFriends\Mvc\User\Options\ModuleOptions::getLoginAfterRegistration
      * @covers \LaminasFriends\Mvc\User\Options\ModuleOptions::setLoginAfterRegistration
      */

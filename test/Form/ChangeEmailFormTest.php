@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasFriendsTest\Mvc\User\Form;
 
+use LaminasFriends\Mvc\User\Options\FormOptionsInterface;
 use PHPUnit\Framework\TestCase;
 use LaminasFriends\Mvc\User\Form\ChangeEmailForm as Form;
 use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
@@ -15,7 +16,7 @@ class ChangeEmailFormTest extends TestCase
      */
     public function testConstruct()
     {
-        $options = $this->createMock(AuthenticationOptionsInterface::class);
+        $options = $this->createMock(FormOptionsInterface::class);
 
         $form = new Form(null, $options);
 

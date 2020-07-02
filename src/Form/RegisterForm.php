@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasFriends\Mvc\User\Form;
 
 use Laminas\Form\Element\Captcha;
+use Laminas\Form\Element\Csrf;
 use LaminasFriends\Mvc\User\Options\RegistrationOptionsInterface;
 
 /**
@@ -27,6 +28,18 @@ class RegisterForm extends Base
     {
         $this->registrationOptions = $options;
         parent::__construct($name);
+
+        $this->add(
+            [
+                'type'    => Csrf::class,
+                'name'    => 'security',
+                'options' => [
+                    'csrf_options' => [
+                        'timeout' => $this->registrationOptions->getRegistrationFormTimeout(),
+                    ],
+                ],
+            ]
+        );
 
         if ($this->registrationOptions->getUseRegistrationFormCaptcha()) {
             $this->add(

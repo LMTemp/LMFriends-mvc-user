@@ -27,8 +27,9 @@ class LoginFormTest extends TestCase
 
         static::assertArrayHasKey('identity', $elements);
         static::assertArrayHasKey('credential', $elements);
+        static::assertArrayHasKey('security', $elements);
 
-        $expectedLabel= '';
+        $expectedLabel = '';
         if (count($authIdentityFields) > 0) {
             foreach ($authIdentityFields as $field) {
                 $expectedLabel .= ($expectedLabel === '') ? '' : ' or ';
@@ -38,20 +39,6 @@ class LoginFormTest extends TestCase
         }
 
         static::assertEquals($expectedLabel, $elements['identity']->getLabel());
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Form\LoginForm::getAuthenticationOptions
-     */
-    public function testGetAuthenticationOptions()
-    {
-        $options = $this->createMock(AuthenticationOptionsInterface::class);
-        $options->expects(static::once())
-                ->method('getAuthIdentityFields')
-                ->willReturn([]);
-        $form = new Form(null, $options);
-
-        static::assertSame($options, $form->getAuthenticationOptions());
     }
 
     public function providerTestConstruct()

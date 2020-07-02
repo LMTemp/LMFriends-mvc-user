@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasFriendsTest\Mvc\User\Form;
 
+use LaminasFriends\Mvc\User\Options\FormOptionsInterface;
 use PHPUnit\Framework\TestCase;
 use LaminasFriends\Mvc\User\Form\ChangePasswordForm as Form;
 use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
@@ -15,7 +16,7 @@ class ChangePasswordFormTest extends TestCase
      */
     public function testConstruct()
     {
-        $options = $this->createMock(AuthenticationOptionsInterface::class);
+        $options = $this->createMock(FormOptionsInterface::class);
 
         $form = new Form(null, $options);
 
@@ -25,17 +26,6 @@ class ChangePasswordFormTest extends TestCase
         static::assertArrayHasKey('credential', $elements);
         static::assertArrayHasKey('newCredential', $elements);
         static::assertArrayHasKey('newCredentialVerify', $elements);
-    }
-
-    /**
-     * @covers \LaminasFriends\Mvc\User\Form\ChangePasswordForm::getAuthenticationOptions
-     * @covers \LaminasFriends\Mvc\User\Form\ChangePasswordForm::setAuthenticationOptions
-     */
-    public function testSetGetAuthenticationOptions()
-    {
-        $options = $this->createMock(AuthenticationOptionsInterface::class);
-        $form = new Form(null, $options);
-
-        static::assertSame($options, $form->getAuthenticationOptions());
+        static::assertArrayHasKey('security', $elements);
     }
 }

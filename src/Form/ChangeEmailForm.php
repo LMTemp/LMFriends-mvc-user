@@ -6,18 +6,20 @@ namespace LaminasFriends\Mvc\User\Form;
 
 use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerAwareTrait;
+use Laminas\Form\Element\Csrf;
 use Laminas\Form\Form;
 use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
+use LaminasFriends\Mvc\User\Options\FormOptionsInterface;
 
 class ChangeEmailForm extends Form implements EventManagerAwareInterface
 {
     use EventManagerAwareTrait;
 
-    protected AuthenticationOptionsInterface $authOptions;
+    protected FormOptionsInterface $formOptions;
 
-    public function __construct($name, AuthenticationOptionsInterface $authOptions)
+    public function __construct($name, FormOptionsInterface $authOptions)
     {
-        $this->authOptions = $authOptions;
+        $this->formOptions = $authOptions;
 
         parent::__construct($name);
 
@@ -29,6 +31,18 @@ class ChangeEmailForm extends Form implements EventManagerAwareInterface
                 ],
                 'attributes' => [
                 'type' => 'hidden',
+                ],
+            ]
+        );
+
+        $this->add(
+            [
+                'type'    => Csrf::class,
+                'name'    => 'security',
+                'options' => [
+                    'csrf_options' => [
+                        'timeout' => $this->formOptions->getChangeEmailFormTimeout(),
+                    ],
                 ],
             ]
         );

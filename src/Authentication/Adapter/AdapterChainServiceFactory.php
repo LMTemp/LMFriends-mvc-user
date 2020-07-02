@@ -23,6 +23,7 @@ class AdapterChainServiceFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $chain = new AdapterChainService();
+        $chain->setEventManager($container->get('EventManager'));
 
         $moduleOptions = $container->get(ModuleOptions::class);
         //iterate and attach multiple adapters and events if offered

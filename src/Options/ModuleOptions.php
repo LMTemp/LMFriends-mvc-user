@@ -27,7 +27,9 @@ class ModuleOptions extends AbstractOptions implements
     protected string $loginRedirectRoute = Module::ROUTE_BASE;
     protected string $logoutRedirectRoute = Module::ROUTE_LOGIN;
     protected int $loginFormTimeout = 300;
-    protected int $userFormTimeout = 300;
+    protected int $registrationFormTimeout = 300;
+    protected int $changeEmailFormTimeout = 300;
+    protected int $changePasswordFormTimeout = 300;
     protected bool $loginAfterRegistration = true;
     protected bool $enableUserState = false;
     protected int $defaultUserState = 1;
@@ -184,25 +186,69 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * get user form timeout in seconds
+     * get registration form timeout in seconds
      *
      * @return int
      */
-    public function getUserFormTimeout(): int
+    public function getRegistrationFormTimeout(): int
     {
-        return $this->userFormTimeout;
+        return $this->registrationFormTimeout;
     }
 
     /**
-     * set user form timeout in seconds
+     * set registration form timeout in seconds
      *
-     * @param int $userFormTimeout
+     * @param int $registrationFormTimeout
      *
      * @return void
      */
-    public function setUserFormTimeout($userFormTimeout): void
+    public function setRegistrationFormTimeout(int $registrationFormTimeout): void
     {
-        $this->userFormTimeout = $userFormTimeout;
+        $this->registrationFormTimeout = $registrationFormTimeout;
+    }
+
+    /**
+     * get change email form timeout in seconds
+     *
+     * @return int
+     */
+    public function getChangeEmailFormTimeout(): int
+    {
+        return $this->changeEmailFormTimeout;
+    }
+
+    /**
+     * set change email form timeout in seconds
+     *
+     * @param int $changeEmailFormTimeout
+     *
+     * @return void
+     */
+    public function setChangeEmailFormTimeout(int $changeEmailFormTimeout): void
+    {
+        $this->changeEmailFormTimeout = $changeEmailFormTimeout;
+    }
+
+    /**
+     * get change pw form timeout in seconds
+     *
+     * @return int
+     */
+    public function getChangePasswordFormTimeout(): int
+    {
+        return $this->changePasswordFormTimeout;
+    }
+
+    /**
+     * set change pw form timeout in seconds
+     *
+     * @param int $changePasswordFormTimeout
+     *
+     * @return void
+     */
+    public function setChangePasswordFormTimeout(int $changePasswordFormTimeout): void
+    {
+        $this->changePasswordFormTimeout = $changePasswordFormTimeout;
     }
 
     /**

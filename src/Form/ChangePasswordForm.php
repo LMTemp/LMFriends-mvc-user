@@ -6,20 +6,26 @@ namespace LaminasFriends\Mvc\User\Form;
 
 use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerAwareTrait;
+use Laminas\Form\Element\Csrf;
 use Laminas\Form\Form;
 use LaminasFriends\Mvc\User\Options\AuthenticationOptionsInterface;
+use LaminasFriends\Mvc\User\Options\FormOptionsInterface;
 
 class ChangePasswordForm extends Form implements EventManagerAwareInterface
 {
     use EventManagerAwareTrait;
-    /**
-     * @var AuthenticationOptionsInterface
-     */
-    protected $authOptions;
 
-    public function __construct($name, AuthenticationOptionsInterface $options)
+    protected FormOptionsInterface $formOptions;
+
+    /**
+     * ChangePasswordForm constructor.
+     *
+     * @param                                $name
+     * @param FormOptionsInterface $options
+     */
+    public function __construct($name, FormOptionsInterface $options)
     {
-        $this->setAuthenticationOptions($options);
+        $this->formOptions = $options;
 
         parent::__construct($name);
 
@@ -31,6 +37,18 @@ class ChangePasswordForm extends Form implements EventManagerAwareInterface
                 ],
                 'attributes' => [
                 'type' => 'hidden'
+                ],
+            ]
+        );
+
+        $this->add(
+            [
+                'type'    => Csrf::class,
+                'name'    => 'security',
+                'options' => [
+                    'csrf_options' => [
+                        'timeout' => $this->formOptions->getChangePasswordFormTimeout(),
+                    ],
                 ],
             ]
         );
@@ -82,29 +100,5 @@ class ChangePasswordForm extends Form implements EventManagerAwareInterface
                 ],
             ]
         );
-    }
-
-    /**
-     * Set Authentication-related Options
-     *
-     * @param AuthenticationOptionsInterface $authOptions
-     *
-     * @return ChangePasswordForm
-     */
-    public function setAuthenticationOptions(AuthenticationOptionsInterface $authOptions)
-    {
-        $this->authOptions = $authOptions;
-
-        return $this;
-    }
-
-    /**
-     * Get Authentication-related Options
-     *
-     * @return AuthenticationOptionsInterface
-     */
-    public function getAuthenticationOptions()
-    {
-        return $this->authOptions;
     }
 }

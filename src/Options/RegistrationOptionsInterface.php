@@ -7,7 +7,7 @@ namespace LaminasFriends\Mvc\User\Options;
 /**
  * Interface RegistrationOptionsInterface
  */
-interface RegistrationOptionsInterface
+interface RegistrationOptionsInterface extends FormOptionsInterface
 {
     /**
      * set enable display name
@@ -53,21 +53,6 @@ interface RegistrationOptionsInterface
      * @return bool
      */
     public function getEnableUsername(): bool;
-
-    /**
-     * set user form timeout in seconds
-     *
-     * @param int $userFormTimeout
-     * @return void
-     */
-    public function setUserFormTimeout(int $userFormTimeout): void;
-
-    /**
-     * get user form timeout in seconds
-     *
-     * @return int
-     */
-    public function getUserFormTimeout(): int;
 
     /**
      * set use a captcha in registration form
