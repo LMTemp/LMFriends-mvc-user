@@ -1,3 +1,9 @@
+<?php
+
+declare(strict_types=1);
+
+use LaminasFriends\Mvc\User\Module;
+?>
 <h1><?php echo $this->translate('RegisterForm'); ?></h1>
 
 <?php
@@ -7,7 +13,7 @@ if (!$this->enableRegistration) {
 }
 $form = $this->registerForm;
 $form->prepare();
-$form->setAttribute('action', $this->url('zfcuser/register'));
+$form->setAttribute('action', $this->url(Module::ROUTE_REGISTER));
 $form->setAttribute('method', 'post');
 $form->setAttribute('autocomplete', 'off');
 ?>

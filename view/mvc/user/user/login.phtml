@@ -1,3 +1,9 @@
+<?php
+
+declare(strict_types=1);
+
+use LaminasFriends\Mvc\User\Module;
+?>
 <h1><?php echo $this->translate('Sign In'); ?></h1>
 
 <?php
@@ -11,5 +17,5 @@ $form->setAttribute('autocomplete', 'off');
 <?php echo $this->partial('_form.phtml', ['form' => $form]); ?>
 
 <?php if ($this->enableRegistration) : ?>
-<?php echo $this->translate('Not registered?'); ?> <a href="<?php echo $this->url('zfcuser/register') . ($this->redirect ? '?redirect='.$this->escapeUrl($this->redirect) : '') ?>"><?php echo $this->translate('Sign up!'); ?></a>
+<?php echo $this->translate('Not registered?'); ?> <a href="<?php echo $this->url(Module::ROUTE_REGISTER) . ($this->redirect ? '?redirect='.$this->escapeUrl($this->redirect) : '') ?>"><?php echo $this->translate('Sign up!'); ?></a>
 <?php endif; ?>
